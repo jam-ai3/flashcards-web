@@ -1,9 +1,7 @@
 import Header from "@/components/header";
 
 type PaymentSuccessPageProps = {
-  searchParams: {
-    productId: string;
-  };
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export default async function PaymentFailurePage({}: PaymentSuccessPageProps) {
