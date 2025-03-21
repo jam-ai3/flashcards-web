@@ -20,15 +20,19 @@ export async function POST(req: NextRequest) {
       return new NextResponse(null, { status: 400 });
     }
 
+    const stripeId = charge.subscription as string | undefined;
+
     switch (productId) {
       case PRODUCTS.single.id:
         await handleSinglePayment(userId);
         break;
       case PRODUCTS.monthly.id:
-        await handleMonthlyPayment(userId);
+        if (!stripeId) return new NextResponse(null, { status: 400 });
+        await handleMonthlyPayment(userId, stripeId);
         break;
       case PRODUCTS.yearly.id:
-        await handleYearlyPayment(userId);
+        if (!stripeId) return new NextResponse(null, { status: 400 });
+        await handleYearlyPayment(userId, stripeId);
         break;
     }
   } else {
@@ -55,7 +59,7 @@ async function handleSinglePayment(userId: string) {
   ]);
 }
 
-async function handleMonthlyPayment(userId: string) {
+async function handleMonthlyPayment(userId: string, stripeId: string) {
   await Promise.all([
     db.sale.create({
       data: {
@@ -69,17 +73,20 @@ async function handleMonthlyPayment(userId: string) {
       update: {
         type: "Monthly",
         expiresAt: new Date(Date.now() + MONTH_IN_MS),
+        isActive: true,
+        generatesUsed: 0,
       },
       create: {
         userId,
         type: "Monthly",
         expiresAt: new Date(Date.now() + MONTH_IN_MS),
+        stripeId,
       },
     }),
   ]);
 }
 
-async function handleYearlyPayment(userId: string) {
+async function handleYearlyPayment(userId: string, stripeId: string) {
   await Promise.all([
     db.sale.create({
       data: {
@@ -93,11 +100,14 @@ async function handleYearlyPayment(userId: string) {
       update: {
         type: "Yearly",
         expiresAt: new Date(Date.now() + YEAR_IN_MS),
+        isActive: true,
+        generatesUsed: 0,
       },
       create: {
         userId,
         type: "Yearly",
         expiresAt: new Date(Date.now() + YEAR_IN_MS),
+        stripeId,
       },
     }),
   ]);

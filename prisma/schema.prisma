@@ -29,6 +29,8 @@ model Subscription {
   expiresAt     DateTime
   generatesUsed Int      @default(0)
   type          String
+  isActive      Boolean  @default(true)
+  stripeId      String   @unique
 
   userId String @unique
 

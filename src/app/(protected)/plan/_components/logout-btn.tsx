@@ -6,7 +6,7 @@ import { logout } from "../_actions/auth";
 
 export default function LogoutBtn() {
   return (
-    <Button onClick={logout}>
+    <Button onClick={logout} className="w-fit">
       <span>Logout</span>
       <LogOut />
     </Button>

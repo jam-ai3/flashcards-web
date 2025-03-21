@@ -19,17 +19,26 @@ type ProductCardProps = {
   product: Product;
   userId: string;
   isSubscribed: boolean;
+  isSubscriptionActive: boolean;
 };
 
 export default function ProductCard({
   product,
   userId,
   isSubscribed,
+  isSubscriptionActive,
 }: ProductCardProps) {
   async function handlePurchase() {
     const url = await createCheckoutSession(product, userId);
     if (!url) return;
     redirect(url);
+  }
+
+  function isDisabled() {
+    if (!product.isSubscription) {
+      return isSubscribed;
+    }
+    return isSubscriptionActive;
   }
 
   return (
@@ -42,7 +51,7 @@ export default function ProductCard({
         <p>{product.description}</p>
       </CardContent>
       <CardFooter>
-        <Button disabled={isSubscribed} onClick={handlePurchase}>
+        <Button disabled={isDisabled()} onClick={handlePurchase}>
           <span>Purchase</span>
           <ArrowRight />
         </Button>

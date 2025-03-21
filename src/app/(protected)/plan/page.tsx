@@ -6,6 +6,7 @@ import { PRODUCTS_ARRAY, UNAUTH_REDIRECT_PATH } from "@/lib/constants";
 import InfoLine from "@/components/info-line";
 import LogoutBtn from "./_components/logout-btn";
 import { getSession } from "@/lib/auth";
+import CancelSubscriptionBtn from "./_components/cancel-subscription-btn";
 
 export default async function PlanPage() {
   const session = await getSession();
@@ -21,7 +22,7 @@ export default async function PlanPage() {
     <div className="flex h-full gap-4">
       <section className="flex-1/2 h-full flex flex-col gap-4">
         <h2 className="font-semibold text-xl">Your Plan</h2>
-        <div className="h-full space-y-6">
+        <div className="h-full flex flex-col gap-6">
           <InfoLine label="Email" value={user.email} />
           <InfoLine
             label="Paid Generates"
@@ -43,6 +44,9 @@ export default async function PlanPage() {
             label="Generates Used"
             value={subscription?.generatesUsed ?? "N/A"}
           />
+          {isSubscribed && subscription?.isActive && (
+            <CancelSubscriptionBtn stripeId={subscription.stripeId} />
+          )}
           <LogoutBtn />
         </div>
       </section>
@@ -55,6 +59,7 @@ export default async function PlanPage() {
               product={p}
               userId={session.id}
               isSubscribed={isSubscribed}
+              isSubscriptionActive={subscription?.isActive ?? false}
             />
           ))}
         </div>
