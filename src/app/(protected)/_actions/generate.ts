@@ -237,31 +237,27 @@ async function createFlashcards(
     });
     return { group, flashcards: undefined };
   }
-  const groupId = crypto.randomUUID();
-  const [group, flashcards] = await Promise.all([
-    db.flashcardGroup.create({
-      data: {
-        id: groupId,
-        userId,
-        prompt,
-        paymentType,
-        inputType,
-        inputFormat,
-        error: undefined,
-      },
-    }),
-    db.flashcard.createMany({
-      data: [
-        ...cards.map(
-          (card): { front: string; back: string; groupId: string } => ({
-            front: card.front,
-            back: card.back,
-            groupId: groupId,
-          })
-        ),
-      ],
-    }),
-  ]);
+  const group = await db.flashcardGroup.create({
+    data: {
+      userId,
+      prompt,
+      paymentType,
+      inputType,
+      inputFormat,
+      error: undefined,
+    },
+  });
+  const flashcards = await db.flashcard.createMany({
+    data: [
+      ...cards.map(
+        (card): { front: string; back: string; groupId: string } => ({
+          front: card.front,
+          back: card.back,
+          groupId: group.id,
+        })
+      ),
+    ],
+  });
   return { group, flashcards };
 }
 
