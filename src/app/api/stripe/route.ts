@@ -6,14 +6,14 @@ import Stripe from "stripe";
 const stripe = new Stripe(process.env.STRIPE_API_KEY!);
 
 export async function POST(req: NextRequest) {
-  const events = stripe.webhooks.constructEvent(
+  const event = stripe.webhooks.constructEvent(
     await req.text(),
     req.headers.get("stripe-signature") as string,
     process.env.STRIPE_WEBHOOK_SECRET!
   );
 
-  if (events.type === "checkout.session.completed") {
-    const charge = events.data.object as Stripe.Checkout.Session;
+  if (event.type === "checkout.session.completed") {
+    const charge = event.data.object as Stripe.Checkout.Session;
     const { userId, productId } = charge.metadata ?? {};
     if (!userId || !productId) {
       console.error("Missing metadata");
@@ -35,8 +35,16 @@ export async function POST(req: NextRequest) {
         await handleYearlyPayment(userId, stripeId);
         break;
     }
+  } else if (event.type === "invoice.payment_succeeded") {
+    const invoice = event.data.object as Stripe.Invoice;
+    const subscriptionId = invoice.subscription as string | undefined;
+    if (!subscriptionId) return new NextResponse(null, { status: 400 });
+    const result = await handleSubscriptionRenewal(subscriptionId);
+    if (result === "error") {
+      return new NextResponse(null, { status: 400 });
+    }
   } else {
-    console.error(`Unhandled event type: ${events.type}`);
+    console.error(`Unhandled event type: ${event.type}`);
     return new NextResponse(null, { status: 400 });
   }
 
@@ -111,4 +119,23 @@ async function handleYearlyPayment(userId: string, stripeId: string) {
       },
     }),
   ]);
+}
+
+async function handleSubscriptionRenewal(stripeId: string) {
+  const existing = await db.subscription.findUnique({
+    where: { stripeId },
+  });
+  if (!existing) return "error";
+  if (existing.type === "Monthly") {
+    await db.subscription.update({
+      where: { stripeId },
+      data: { expiresAt: new Date(Date.now() + MONTH_IN_MS) },
+    });
+  } else if (existing.type === "Yearly") {
+    await db.subscription.update({
+      where: { stripeId },
+      data: { expiresAt: new Date(Date.now() + YEAR_IN_MS) },
+    });
+  }
+  return "success";
 }
