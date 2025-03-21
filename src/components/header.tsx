@@ -1,4 +1,4 @@
-import getSession from "@/hooks/getSession";
+import { getSession } from "@/lib/auth";
 import Link from "next/link";
 
 export default async function Header() {

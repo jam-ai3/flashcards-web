@@ -1,12 +1,11 @@
 import db from "@/db/db";
-import getSession from "@/hooks/getSession";
 import { formatNumber } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import ProductCard from "./_components/product-card";
 import { PRODUCTS_ARRAY, UNAUTH_REDIRECT_PATH } from "@/lib/constants";
 import InfoLine from "@/components/info-line";
-import { Label } from "@/components/ui/label";
 import LogoutBtn from "./_components/logout-btn";
+import { getSession } from "@/lib/auth";
 
 export default async function PlanPage() {
   const session = await getSession();
