@@ -17,11 +17,10 @@ export default async function HomePage() {
       <div className="grid grid-cols-2 gap-4 h-full p-4">
         <section className="h-full grid place-items-center">
           <div className="flex flex-col gap-6">
-            <p className="text-2xl font-bold">Lorem ipsum dolor sit amet.</p>
+            <p className="text-2xl font-bold">Write Less, Study More</p>
             <p className="text-muted-foreground max-w-2/3">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nostrum,
-              obcaecati enim voluptatem harum temporibus adipisci debitis
-              eveniet tempora illo beatae.
+              Generate flashcards from your notes, syllabus, or some information
+              about your course. Then upload them to Anki or Quizlet to study.
             </p>
             <Button asChild className="w-fit">
               <Link href={session ? "/" : "/auth/login"}>
