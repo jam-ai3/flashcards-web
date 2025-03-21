@@ -68,6 +68,13 @@ async function handleSinglePayment(userId: string) {
 }
 
 async function handleMonthlyPayment(userId: string, stripeId: string) {
+  const existing = await db.subscription.findUnique({
+    where: { userId },
+    select: { expiresAt: true },
+  });
+  const newExpiresAt = new Date(
+    (existing?.expiresAt.getDate() ?? Date.now()) + MONTH_IN_MS
+  );
   await Promise.all([
     db.sale.create({
       data: {
@@ -80,14 +87,14 @@ async function handleMonthlyPayment(userId: string, stripeId: string) {
       where: { userId },
       update: {
         type: "Monthly",
-        expiresAt: new Date(Date.now() + MONTH_IN_MS),
+        expiresAt: newExpiresAt,
         isActive: true,
         generatesUsed: 0,
       },
       create: {
         userId,
         type: "Monthly",
-        expiresAt: new Date(Date.now() + MONTH_IN_MS),
+        expiresAt: newExpiresAt,
         stripeId,
       },
     }),
@@ -95,6 +102,13 @@ async function handleMonthlyPayment(userId: string, stripeId: string) {
 }
 
 async function handleYearlyPayment(userId: string, stripeId: string) {
+  const existing = await db.subscription.findUnique({
+    where: { userId },
+    select: { expiresAt: true },
+  });
+  const newExpiresAt = new Date(
+    (existing?.expiresAt.getDate() ?? Date.now()) + YEAR_IN_MS
+  );
   await Promise.all([
     db.sale.create({
       data: {
@@ -107,14 +121,14 @@ async function handleYearlyPayment(userId: string, stripeId: string) {
       where: { userId },
       update: {
         type: "Yearly",
-        expiresAt: new Date(Date.now() + YEAR_IN_MS),
+        expiresAt: newExpiresAt,
         isActive: true,
         generatesUsed: 0,
       },
       create: {
         userId,
         type: "Yearly",
-        expiresAt: new Date(Date.now() + YEAR_IN_MS),
+        expiresAt: newExpiresAt,
         stripeId,
       },
     }),
