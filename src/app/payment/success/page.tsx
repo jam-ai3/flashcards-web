@@ -2,7 +2,7 @@ import Header from "@/components/header";
 import { PRODUCTS_ARRAY } from "@/lib/constants";
 
 type PaymentSuccessPageProps = {
-  searchParams: Promise<any>;
+  searchParams: Promise<{ productId?: string }>;
 };
 
 export default async function PaymentSuccessPage({

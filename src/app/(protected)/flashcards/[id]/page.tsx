@@ -3,7 +3,7 @@ import FlashcardGrid from "./_components/flashcard-grid";
 import { notFound } from "next/navigation";
 
 type FlashcardsPageProps = {
-  params: Promise<any>;
+  params: Promise<{ id: string }>;
 };
 
 export default async function FlashcardsPage({ params }: FlashcardsPageProps) {

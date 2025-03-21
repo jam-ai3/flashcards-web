@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import CopyButton from "@/components/copy-btn";
 
 type LogPageProps = {
-  params: Promise<any>;
+  params: Promise<{ id: string }>;
 };
 
 export default async function LogPage({ params }: LogPageProps) {

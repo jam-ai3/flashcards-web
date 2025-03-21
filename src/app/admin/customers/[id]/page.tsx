@@ -13,7 +13,7 @@ import { formatNumber, formatPrice } from "@/lib/utils";
 import { notFound } from "next/navigation";
 
 type CustomerPageProps = {
-  params: Promise<any>;
+  params: Promise<{ id: string }>;
 };
 
 async function getCustomerData(id: string) {
