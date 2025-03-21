@@ -43,7 +43,7 @@ export default function TableFilters({
     <div className="flex gap-2">
       <FilterSelect
         value={paymentType}
-        onValueChange={(e) => setPaymentType(e as any)}
+        onValueChange={(e) => setPaymentType(e as PaymentType)}
         placeholder="Payment Type"
         label="Status"
         items={[
@@ -55,7 +55,7 @@ export default function TableFilters({
       />
       <FilterSelect
         value={inputFormat}
-        onValueChange={(e) => setInputFormat(e as any)}
+        onValueChange={(e) => setInputFormat(e as InputFormat)}
         placeholder="Input Format"
         label="Input Format"
         items={[
@@ -67,7 +67,7 @@ export default function TableFilters({
       />
       <FilterSelect
         value={inputType}
-        onValueChange={(e) => setInputType(e as any)}
+        onValueChange={(e) => setInputType(e as InputType)}
         placeholder="Input Type"
         label="Input Type"
         items={[
@@ -79,7 +79,7 @@ export default function TableFilters({
       />
       <FilterSelect
         value={status}
-        onValueChange={(e) => setStatus(e as any)}
+        onValueChange={(e) => setStatus(e as Status)}
         placeholder="Status"
         label="Status"
         items={[

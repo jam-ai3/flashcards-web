@@ -252,11 +252,13 @@ async function createFlashcards(
     }),
     db.flashcard.createMany({
       data: [
-        ...cards.map((card): any => ({
-          front: card.front,
-          back: card.back,
-          groupId: groupId,
-        })),
+        ...cards.map(
+          (card): { front: string; back: string; groupId: string } => ({
+            front: card.front,
+            back: card.back,
+            groupId: groupId,
+          })
+        ),
       ],
     }),
   ]);

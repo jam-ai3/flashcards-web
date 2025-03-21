@@ -41,7 +41,8 @@ export async function getCustomers(ordering: Ordering, page: number = 1) {
     },
     take: TABLE_ROWS_PER_PAGE,
     skip: (page - 1) * TABLE_ROWS_PER_PAGE,
-    orderBy: orderFunction as any,
+    // TODO: change typing
+    orderBy: orderFunction as { createdAt: "asc" | "desc" },
   });
 }
 

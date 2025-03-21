@@ -24,7 +24,7 @@ export async function verifyToken(token: string) {
       algorithms: ["HS256"],
     });
     return payload as User;
-  } catch (error) {
+  } catch {
     return null;
   }
 }

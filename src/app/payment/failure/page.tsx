@@ -6,9 +6,7 @@ type PaymentSuccessPageProps = {
   };
 };
 
-export default async function PaymentFailurePage({
-  searchParams,
-}: PaymentSuccessPageProps) {
+export default async function PaymentFailurePage({}: PaymentSuccessPageProps) {
   return (
     <main className="flex flex-col gap-6 p-8 h-screen">
       <Header />

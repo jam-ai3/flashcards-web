@@ -34,7 +34,7 @@ export default function AdminCustomersPage() {
     getCustomers(ordering, page)
       .then((customers) => setCustomers(customers))
       .finally(() => setIsLoading(false));
-  }, [ordering]);
+  }, [ordering, page]);
 
   useEffect(() => {
     getTotalCustomers().then((total) => setTotal(total));
