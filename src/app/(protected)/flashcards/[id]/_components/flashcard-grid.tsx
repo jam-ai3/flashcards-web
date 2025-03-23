@@ -59,16 +59,29 @@ export default function FlashcardGrid({
           <Button onClick={handleExport}>Export CSV</Button>
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-4">
-        {flashcards.map((flashcard) => (
-          <FlashcardView
-            key={flashcard.id}
-            flashcard={flashcard}
-            isSelected={selected.includes(flashcard)}
-            handleSelect={toggleSelect}
-          />
-        ))}
-      </div>
+      {group.error ? (
+        <div className="grid place-items-center h-full">
+          <div className="flex flex-col gap-2 items-center">
+            <p className="font-semibold text-xl">
+              There was an error generating your flashcards
+            </p>
+            <p className="text-muted-foreground">
+              You were not charged for this attempt
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-3 gap-4">
+          {flashcards.map((flashcard) => (
+            <FlashcardView
+              key={flashcard.id}
+              flashcard={flashcard}
+              isSelected={selected.includes(flashcard)}
+              handleSelect={toggleSelect}
+            />
+          ))}
+        </div>
+      )}
     </>
   );
 }

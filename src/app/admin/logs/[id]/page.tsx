@@ -39,7 +39,6 @@ export default async function LogPage({ params }: LogPageProps) {
         </div>
         <p className="text-sm">{group?.prompt}</p>
       </section>
-      <p>{group?.error}</p>
     </div>
   );
 }

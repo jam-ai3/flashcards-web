@@ -7,3 +7,13 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:3000/api/testing
+
+###
+POST http://localhost:3000/api/flashcards/test
+Content-Type: application/json
+
+{
+  "flashcards": [
+    
+  ]
+}

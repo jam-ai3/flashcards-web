@@ -20,10 +20,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useActionState, useState } from "react";
-import { handleGenerate } from "../_actions/generate";
+import { useActionState, useEffect, useState } from "react";
+import { getFlashcardGroup, handleGenerate } from "../_actions/generate";
 import { Error } from "@/lib/utils";
 import { InputFormat, InputType } from "@/lib/types";
+import { redirect } from "next/navigation";
 
 type GenerateError = {
   format?: string[];
@@ -45,11 +46,29 @@ type GenerateFormProps = {
 };
 
 export default function GenerateForm({ userId }: GenerateFormProps) {
+  const [groupId] = useState(crypto.randomUUID());
+  const [isPolling, setIsPolling] = useState(false);
   const [inputType, setInputType] = useState<InputType>("courseInfo");
   const [error, action, isPending] = useActionState(
-    handleGenerate.bind(null, userId, inputType),
+    handleGenerate.bind(null, groupId, userId, inputType),
     {}
   );
+
+  useEffect(() => {
+    if (isPending && !isPolling) {
+      setIsPolling(true);
+      pollResource();
+    }
+  }, [isPending]);
+
+  async function pollResource() {
+    const exists = await getFlashcardGroup(groupId);
+    if (exists) {
+      redirect(`/flashcards/${groupId}`);
+    } else {
+      setTimeout(pollResource, 5000);
+    }
+  }
 
   function renderInput() {
     switch (inputType) {
@@ -104,8 +123,8 @@ export default function GenerateForm({ userId }: GenerateFormProps) {
       <CardContent>
         <form action={action} className="flex flex-col gap-2">
           {renderInput()}
-          <Button type="submit" className="mt-6" disabled={isPending}>
-            {isPending ? "Generating..." : "Generate"}
+          <Button type="submit" className="mt-6" disabled={isPolling}>
+            {isPolling ? "Generating..." : "Generate"}
           </Button>
           {(error as Error).error && (
             <p className="text-destructive">{(error as Error).error}</p>

@@ -34,6 +34,7 @@ type PaymentResult = {
 type PaymentType = "free" | "single" | "subscription";
 
 export async function handleGenerate(
+  groupId: string,
   userId: string,
   inputType: InputType,
   _: unknown,
@@ -59,27 +60,17 @@ export async function handleGenerate(
   if (isError(paymentType)) return paymentType;
 
   // get flashcards
-  const cards = await generateFlashcards(inputType, text, paymentType);
-
-  // create flashcards
-  const { group, flashcards } = await createFlashcards(
-    cards,
+  const cards = await generateFlashcards(
     text,
-    userId,
-    paymentType,
     inputType,
-    result.data.format
+    result.data.format,
+    paymentType,
+    groupId,
+    userId
   );
+  if (isError(cards)) return cards;
 
-  // return if error generating cards
-  if (flashcards === undefined && isError(cards)) {
-    return cards;
-  }
-
-  // charge user
-  await chargeUser(userId, paymentType);
-
-  redirect(`/flashcards/${group.id}`);
+  return { error: undefined };
 }
 
 async function formatText(
@@ -181,20 +172,31 @@ function getPaymentType(payment: PaymentResult): PaymentType | Error {
 }
 
 async function generateFlashcards(
-  inputType: InputType,
   text: string,
-  paymentType: PaymentType
-): Promise<RawFlashcard[] | Error> {
+  inputType: InputType,
+  inputFormat: InputFormat,
+  paymentType: PaymentType,
+  groupId: string,
+  userId: string
+): Promise<string | Error> {
   try {
     const res = await fetch(`${process.env.PYTHON_SERVER_URL}/generate`, {
       method: "POST",
-      body: JSON.stringify({ inputType, text, isFree: paymentType === "free" }),
+      body: JSON.stringify({
+        text,
+        inputType,
+        inputFormat,
+        paymentType,
+        groupId,
+        userId,
+      }),
       headers: {
         Authorization: `Bearer ${process.env.PYTHON_SERVER_API_KEY}`,
         "Content-Type": "application/json",
       },
     });
     if (!res.ok) {
+      console.log(res);
       const json = await res.json();
       return {
         error: "Failed to generate flashcards",
@@ -211,75 +213,10 @@ async function generateFlashcards(
   }
 }
 
-type RawFlashcard = {
-  front: string;
-  back: string;
-};
-
-async function createFlashcards(
-  cards: RawFlashcard[] | Error,
-  prompt: string,
-  userId: string,
-  paymentType: PaymentType,
-  inputType: InputType,
-  inputFormat: InputFormat
-) {
-  if (isError(cards)) {
-    const group = await db.flashcardGroup.create({
-      data: {
-        userId,
-        prompt,
-        paymentType,
-        inputType,
-        inputFormat,
-        error: cards.devError ?? cards.error,
-      },
-    });
-    return { group, flashcards: undefined };
-  }
-  const group = await db.flashcardGroup.create({
-    data: {
-      userId,
-      prompt,
-      paymentType,
-      inputType,
-      inputFormat,
-      error: undefined,
-    },
+export async function getFlashcardGroup(groupId: string) {
+  const group = await db.flashcardGroup.findUnique({
+    where: { id: groupId },
+    select: { id: true },
   });
-  const flashcards = await db.flashcard.createMany({
-    data: [
-      ...cards.map(
-        (card): { front: string; back: string; groupId: string } => ({
-          front: card.front,
-          back: card.back,
-          groupId: group.id,
-        })
-      ),
-    ],
-  });
-  return { group, flashcards };
-}
-
-async function chargeUser(userId: string, paymentType: PaymentType) {
-  switch (paymentType) {
-    case "free":
-      await db.user.update({
-        where: { id: userId },
-        data: { freeGenerates: { decrement: 1 } },
-      });
-      break;
-    case "single":
-      await db.user.update({
-        where: { id: userId },
-        data: { paidGenerates: { decrement: 1 } },
-      });
-      break;
-    case "subscription":
-      await db.subscription.update({
-        where: { userId },
-        data: { generatesUsed: { increment: 1 } },
-      });
-      break;
-  }
+  return group !== null;
 }
