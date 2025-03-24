@@ -45,6 +45,9 @@ type GenerateFormProps = {
   userId: string;
 };
 
+const POLL_INTERVAL = 5000;
+const MAX_POLL_DEPTH = 12;
+
 export default function GenerateForm({ userId }: GenerateFormProps) {
   const [groupId] = useState(crypto.randomUUID());
   const [isPolling, setIsPolling] = useState(false);
@@ -61,12 +64,16 @@ export default function GenerateForm({ userId }: GenerateFormProps) {
     }
   }, [isPending]);
 
-  async function pollResource() {
+  async function pollResource(depth = 0) {
     const exists = await getFlashcardGroup(groupId);
     if (exists) {
       redirect(`/flashcards/${groupId}`);
     } else {
-      setTimeout(pollResource, 5000);
+      if (depth > MAX_POLL_DEPTH) {
+        setIsPolling(false);
+        return; // handle error
+      }
+      setTimeout(pollResource.bind(null, depth + 1), POLL_INTERVAL);
     }
   }
 
