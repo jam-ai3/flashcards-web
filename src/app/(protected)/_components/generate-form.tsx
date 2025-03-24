@@ -46,7 +46,7 @@ type GenerateFormProps = {
 };
 
 const POLL_INTERVAL = 5000;
-const MAX_POLL_DEPTH = 12;
+const MAX_POLL_DEPTH = 24; // 2 minutes
 
 export default function GenerateForm({ userId }: GenerateFormProps) {
   const [groupId] = useState(crypto.randomUUID());
