@@ -9,52 +9,56 @@ type RawFlashcard = {
 };
 
 export async function POST(req: NextRequest) {
-  const json = await req.json();
-  const {
-    userId,
-    groupId,
-    flashcards,
-    inputType,
-    inputFormat,
-    paymentType,
-    prompt,
-  } = json;
+  try {
+    const json = await req.json();
+    const {
+      userId,
+      groupId,
+      flashcards,
+      inputType,
+      inputFormat,
+      paymentType,
+      prompt,
+    } = json;
 
-  if (isError(flashcards)) {
-    await db.flashcardGroup.create({
-      data: {
-        userId,
-        id: groupId,
-        paymentType,
-        inputFormat,
-        inputType,
-        error: flashcards.devError ?? flashcards.error,
-        prompt,
-      },
-    });
-  } else {
-    await db.flashcardGroup.create({
-      data: {
-        userId,
-        id: groupId,
-        paymentType,
-        inputFormat,
-        inputType,
-        error: null,
-        prompt,
-      },
-    });
-    await db.flashcard.createMany({
-      data: (flashcards as RawFlashcard[]).map((f) => ({
-        front: f.front,
-        back: f.back,
-        groupId,
-      })),
-    });
-    await chargeUser(userId, paymentType);
+    if (isError(flashcards)) {
+      await db.flashcardGroup.create({
+        data: {
+          userId,
+          id: groupId,
+          paymentType,
+          inputFormat,
+          inputType,
+          error: flashcards.devError ?? flashcards.error,
+          prompt,
+        },
+      });
+    } else {
+      await db.flashcardGroup.create({
+        data: {
+          userId,
+          id: groupId,
+          paymentType,
+          inputFormat,
+          inputType,
+          error: null,
+          prompt,
+        },
+      });
+      await db.flashcard.createMany({
+        data: (flashcards as RawFlashcard[]).map((f) => ({
+          front: f.front,
+          back: f.back,
+          groupId,
+        })),
+      });
+      await chargeUser(userId, paymentType);
+    }
+    return new NextResponse("Success", { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return new NextResponse("Failed to create flashcards", { status: 500 });
   }
-
-  return new NextResponse("Success", { status: 200 });
 }
 
 async function chargeUser(userId: string, paymentType: PaymentType) {

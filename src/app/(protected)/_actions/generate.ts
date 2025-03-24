@@ -58,7 +58,7 @@ export async function handleGenerate(
   const paymentType = getPaymentType(paymentOptions);
   if (isError(paymentType)) return paymentType;
 
-  // get flashcards
+  // send request to server to generate flashcards
   const cards = await generateFlashcards(
     text,
     inputType,
