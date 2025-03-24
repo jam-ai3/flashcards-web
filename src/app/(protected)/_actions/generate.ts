@@ -3,7 +3,6 @@
 import { z } from "zod";
 import db from "@/db/db";
 import { Error, isError } from "@/lib/utils";
-import { redirect } from "next/navigation";
 import { InputFormat, InputType } from "@/lib/types";
 
 const generateSchema = z.object({

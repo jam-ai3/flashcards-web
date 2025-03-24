@@ -43,15 +43,14 @@ export async function POST(req: NextRequest) {
         error: null,
         prompt,
       },
-    }),
-      await db.flashcard.createMany({
-        data: (flashcards as RawFlashcard[]).map((f) => ({
-          front: f.front,
-          back: f.back,
-          groupId,
-        })),
-      });
-
+    });
+    await db.flashcard.createMany({
+      data: (flashcards as RawFlashcard[]).map((f) => ({
+        front: f.front,
+        back: f.back,
+        groupId,
+      })),
+    });
     await chargeUser(userId, paymentType);
   }
 

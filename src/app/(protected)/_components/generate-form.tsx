@@ -45,6 +45,15 @@ type GenerateFormProps = {
   userId: string;
 };
 
+async function pollResource(groupId: string) {
+  const exists = await getFlashcardGroup(groupId);
+  if (exists) {
+    redirect(`/flashcards/${groupId}`);
+  } else {
+    setTimeout(pollResource, 5000);
+  }
+}
+
 export default function GenerateForm({ userId }: GenerateFormProps) {
   const [groupId] = useState(crypto.randomUUID());
   const [isPolling, setIsPolling] = useState(false);
@@ -57,18 +66,9 @@ export default function GenerateForm({ userId }: GenerateFormProps) {
   useEffect(() => {
     if (isPending && !isPolling) {
       setIsPolling(true);
-      pollResource();
+      pollResource(groupId);
     }
-  }, [isPending]);
-
-  async function pollResource() {
-    const exists = await getFlashcardGroup(groupId);
-    if (exists) {
-      redirect(`/flashcards/${groupId}`);
-    } else {
-      setTimeout(pollResource, 5000);
-    }
-  }
+  }, [isPending, isPolling]);
 
   function renderInput() {
     switch (inputType) {
