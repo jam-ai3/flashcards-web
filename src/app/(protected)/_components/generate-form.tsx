@@ -46,11 +46,12 @@ type GenerateFormProps = {
 };
 
 async function pollResource(groupId: string) {
+  console.log(groupId);
   const exists = await getFlashcardGroup(groupId);
   if (exists) {
     redirect(`/flashcards/${groupId}`);
   } else {
-    setTimeout(pollResource, 5000);
+    setTimeout(pollResource.bind(null, groupId), 5000);
   }
 }
 

@@ -213,6 +213,7 @@ async function generateFlashcards(
 }
 
 export async function getFlashcardGroup(groupId: string) {
+  console.log("getFlashcardGroup", groupId);
   const group = await db.flashcardGroup.findUnique({
     where: { id: groupId },
     select: { id: true },
