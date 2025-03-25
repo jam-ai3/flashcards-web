@@ -90,16 +90,14 @@ async function formatText(
         : inputType === "notes"
         ? data.notesText
         : data.syllabusText;
-  } else {
-    if (data.notesPdf) {
-      text = await parseFile(data.notesPdf, format);
-    } else if (data.notesPptx) {
-      text = await parseFile(data.notesPptx, format);
-    } else if (data.syllabusPdf) {
-      text = await parseFile(data.syllabusPdf, format);
-    } else if (data.syllabusPptx) {
-      text = await parseFile(data.syllabusPptx, format);
-    }
+  } else if (data.notesPdf) {
+    text = await parseFile(data.notesPdf, format);
+  } else if (data.notesPptx) {
+    text = await parseFile(data.notesPptx, format);
+  } else if (data.syllabusPdf) {
+    text = await parseFile(data.syllabusPdf, format);
+  } else if (data.syllabusPptx) {
+    text = await parseFile(data.syllabusPptx, format);
   }
   if (text === undefined) {
     return { error: "Invalid input format" };

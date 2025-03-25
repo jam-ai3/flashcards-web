@@ -312,9 +312,13 @@ function SyllabusInput({ error }: InputProps) {
           Syllabus
         </Label>
         <Select
+          name="format"
           required
           value={format}
-          onValueChange={(e) => setFormat(e as InputFormat)}
+          onValueChange={(e) => {
+            setFormat(e as InputFormat);
+            console.log(e);
+          }}
         >
           <SelectTrigger>
             <SelectValue placeholder="Choose an Input Format" />
