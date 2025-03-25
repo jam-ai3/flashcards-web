@@ -129,7 +129,8 @@ async function parseFile(
   } catch (error) {
     console.error(error);
     return {
-      error: "Failed to parse file, please make sure it is not over 25MB",
+      error: "Failed to parse file, please make sure it is not over 5MB",
+      devError: error as string,
     };
   }
 }

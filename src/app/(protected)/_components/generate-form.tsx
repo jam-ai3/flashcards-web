@@ -83,6 +83,7 @@ export default function GenerateForm({ userId }: GenerateFormProps) {
 
   useEffect(() => {
     if (isError(error)) {
+      console.log(error);
       isPolling.current = false;
     }
   }, [error]);
