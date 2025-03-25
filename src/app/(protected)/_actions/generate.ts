@@ -197,7 +197,6 @@ async function generateFlashcards(
       },
     });
     if (!res.ok) {
-      console.log(res);
       const json = await res.json();
       return {
         error: "Failed to generate flashcards",
@@ -215,7 +214,6 @@ async function generateFlashcards(
 }
 
 export async function getFlashcardGroup(groupId: string) {
-  console.log(groupId);
   const group = await db.flashcardGroup.findUnique({
     where: { id: groupId },
     select: { id: true },

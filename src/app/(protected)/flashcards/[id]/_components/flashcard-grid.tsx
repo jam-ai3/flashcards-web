@@ -35,7 +35,7 @@ export default function FlashcardGrid({
   }
 
   function handleExport() {
-    const csv = selected.map((f) => `${f.front},${f.back}`).join("\n");
+    const csv = selected.map((f) => `"${f.front}","${f.back}"`).join("\n");
     exportCsv(csv);
   }
 
