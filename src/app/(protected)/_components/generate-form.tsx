@@ -140,8 +140,12 @@ export default function GenerateForm({ userId }: GenerateFormProps) {
       <CardContent>
         <form action={action} className="flex flex-col gap-2">
           {renderInput()}
-          <Button type="submit" className="mt-6" disabled={isPolling.current}>
-            {isPolling.current ? "Generating..." : "Generate"}
+          <Button
+            type="submit"
+            className="mt-6"
+            disabled={isPolling.current || isPending}
+          >
+            {isPolling.current || isPending ? "Generating..." : "Generate"}
           </Button>
           {(error as Error).error && (
             <p className="text-destructive">{(error as Error).error}</p>
