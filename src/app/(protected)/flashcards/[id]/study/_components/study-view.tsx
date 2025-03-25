@@ -50,7 +50,7 @@ function FlashcardView({ flashcard }: FlashcardViewProps) {
   return (
     <div
       onClick={() => setSide(side === "front" ? "back" : "front")}
-      className="border-2 rounded-md aspect-video w-1/2 grid place-items-center cursor-pointer p-6"
+      className="border-2 rounded-xl aspect-video w-1/2 grid place-items-center cursor-pointer p-6"
     >
       <p className="text-lg text-center">
         {side === "front" ? flashcard.front : flashcard.back}
