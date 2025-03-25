@@ -20,9 +20,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { getFlashcardGroup, handleGenerate } from "../_actions/generate";
-import { Error } from "@/lib/utils";
+import { Error, isError } from "@/lib/utils";
 import { InputFormat, InputType } from "@/lib/types";
 import { redirect } from "next/navigation";
 
@@ -45,31 +45,47 @@ type GenerateFormProps = {
   userId: string;
 };
 
-async function pollResource(groupId: string) {
-  console.log(groupId);
-  const exists = await getFlashcardGroup(groupId);
-  if (exists) {
-    redirect(`/flashcards/${groupId}`);
-  } else {
-    setTimeout(pollResource.bind(null, groupId), 5000);
-  }
-}
+const POLL_INTERVAL = 5000;
+const MAX_POLL_COUNT = 12; // one minute
 
 export default function GenerateForm({ userId }: GenerateFormProps) {
   const [groupId] = useState(crypto.randomUUID());
-  const [isPolling, setIsPolling] = useState(false);
+  const isPolling = useRef(false);
   const [inputType, setInputType] = useState<InputType>("courseInfo");
   const [error, action, isPending] = useActionState(
     handleGenerate.bind(null, groupId, userId, inputType),
     {}
   );
+  const [pollTimeoutError, setPollTimeoutError] = useState<string | null>(null);
+
+  async function pollResource(groupId: string, depth = 0) {
+    if (depth !== 0 && !isPolling) return;
+    const exists = await getFlashcardGroup(groupId);
+    if (exists) {
+      redirect(`/flashcards/${groupId}`);
+    }
+    if (depth < MAX_POLL_COUNT) {
+      setTimeout(() => pollResource(groupId, depth + 1), POLL_INTERVAL);
+    } else {
+      isPolling.current = false;
+      setPollTimeoutError(
+        "Failed to get a response from the server in time, please check your flashcard groups to see if your flashcards have been generated"
+      );
+    }
+  }
 
   useEffect(() => {
-    if (isPending && !isPolling) {
-      setIsPolling(true);
+    if (isPending && !isPolling.current) {
+      isPolling.current = true;
       pollResource(groupId);
     }
-  }, [isPending, isPolling]);
+  }, [isPending, isPolling, pollResource]);
+
+  useEffect(() => {
+    if (isError(error)) {
+      isPolling.current = false;
+    }
+  }, [error]);
 
   function renderInput() {
     switch (inputType) {
@@ -124,11 +140,14 @@ export default function GenerateForm({ userId }: GenerateFormProps) {
       <CardContent>
         <form action={action} className="flex flex-col gap-2">
           {renderInput()}
-          <Button type="submit" className="mt-6" disabled={isPolling}>
-            {isPolling ? "Generating..." : "Generate"}
+          <Button type="submit" className="mt-6" disabled={isPolling.current}>
+            {isPolling.current ? "Generating..." : "Generate"}
           </Button>
           {(error as Error).error && (
             <p className="text-destructive">{(error as Error).error}</p>
+          )}
+          {pollTimeoutError && (
+            <p className="text-destructive">{pollTimeoutError}</p>
           )}
         </form>
       </CardContent>

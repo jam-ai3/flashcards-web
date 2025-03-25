@@ -128,7 +128,9 @@ async function parseFile(
     return await res.json();
   } catch (error) {
     console.error(error);
-    return { error: "Failed to parse file" };
+    return {
+      error: "Failed to parse file, please make sure it is not over 25MB",
+    };
   }
 }
 
@@ -213,7 +215,7 @@ async function generateFlashcards(
 }
 
 export async function getFlashcardGroup(groupId: string) {
-  console.log("getFlashcardGroup", groupId);
+  console.log(groupId);
   const group = await db.flashcardGroup.findUnique({
     where: { id: groupId },
     select: { id: true },
