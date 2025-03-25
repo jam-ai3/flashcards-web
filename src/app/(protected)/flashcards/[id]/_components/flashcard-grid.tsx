@@ -5,7 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { MAX_FREE_TIER_FLASHCARDS } from "@/lib/constants";
 import { exportCsv } from "@/lib/utils";
 import { Flashcard, FlashcardGroup } from "@prisma/client";
-import { Circle, CircleCheck, Info } from "lucide-react";
+import { Book, Circle, CircleCheck, Info } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 type FlashcardGridProps = {
@@ -57,7 +58,13 @@ export default function FlashcardGrid({
             </div>
           )}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-4 items-center">
+          <Button asChild variant="secondary">
+            <Link href={`/flashcards/${group.id}/study`}>
+              <Book className="text-primary" />
+              <span className="text-primary">Study</span>
+            </Link>
+          </Button>
           <Button onClick={toggleSelectAll} variant="secondary">
             <span>
               {selected.length} / {flashcards.length}
