@@ -2,9 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { MAX_FREE_TIER_FLASHCARDS } from "@/lib/constants";
 import { exportCsv } from "@/lib/utils";
 import { Flashcard, FlashcardGroup } from "@prisma/client";
-import { Circle, CircleCheck } from "lucide-react";
+import { Circle, CircleCheck, Info } from "lucide-react";
 import { useState } from "react";
 
 type FlashcardGridProps = {
@@ -42,9 +43,20 @@ export default function FlashcardGrid({
   return (
     <>
       <div className="flex justify-between items-center">
-        <p className="text-muted-foreground">
-          {formatPaymentString(group.paymentType)}
-        </p>
+        <div>
+          <p className="text-muted-foreground">
+            {formatPaymentString(group.paymentType)}
+          </p>
+          {group.paymentType === "free" && (
+            <div className="text-yellow-500 flex items-center gap-2">
+              <Info />
+              <p>
+                Flashcards generated using free trial are limited to a maximum
+                of {MAX_FREE_TIER_FLASHCARDS}
+              </p>
+            </div>
+          )}
+        </div>
         <div className="flex gap-2">
           <Button onClick={toggleSelectAll} variant="secondary">
             <span>

@@ -1,9 +1,10 @@
 export const MONTH_IN_MS = 1000 * 60 * 60 * 24 * 30;
 export const YEAR_IN_MS = 1000 * 60 * 60 * 24 * 365;
 export const TABLE_ROWS_PER_PAGE = 15;
-export const UNAUTH_REDIRECT_PATH = "/home"; // TODO: change to /home
+export const UNAUTH_REDIRECT_PATH = "/home";
 export const AUTH_REDIRECT_PATH = "/";
 export const ADMIN_PATH_PREFIX = "/admin";
+export const MAX_FREE_TIER_FLASHCARDS = 9;
 
 export type Product = {
   id: string;
