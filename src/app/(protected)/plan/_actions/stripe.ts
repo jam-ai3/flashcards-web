@@ -25,6 +25,7 @@ export async function createCheckoutSession(product: Product, userId: string) {
       },
     ],
     mode: product.isSubscription ? "subscription" : "payment",
+    allow_promotion_codes: true,
     success_url: `${process.env.SERVER_URL!}/home`,
     cancel_url: `${process.env.SERVER_URL!}/payment/failure?productId=${
       product.id

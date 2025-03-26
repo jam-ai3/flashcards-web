@@ -39,6 +39,19 @@ export default function AdminHeader() {
           </Link>
         </li>
         <li>
+          <Link href="/admin/organizations">
+            <span
+              className={
+                pathname === "/admin/organizations"
+                  ? "text-primary font-semibold"
+                  : "text-muted-foreground"
+              }
+            >
+              Organizations
+            </span>
+          </Link>
+        </li>
+        <li>
           <Link href="/admin/sales">
             <span
               className={

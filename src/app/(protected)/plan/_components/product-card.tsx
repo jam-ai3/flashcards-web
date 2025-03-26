@@ -38,7 +38,7 @@ export default function ProductCard({
     if (!product.isSubscription) {
       return isSubscribed;
     }
-    return isSubscriptionActive;
+    return isSubscriptionActive && isSubscribed;
   }
 
   return (

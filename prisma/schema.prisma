@@ -70,6 +70,7 @@ model Sale {
   userId             String
   pricePaidInPennies Int
   createdAt          DateTime @default(now())
+  couponCode         String?
 
   user User @relation(fields: [userId], references: [id], onDelete: NoAction)
 }
