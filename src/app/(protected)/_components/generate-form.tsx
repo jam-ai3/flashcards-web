@@ -83,7 +83,6 @@ export default function GenerateForm({ userId }: GenerateFormProps) {
 
   useEffect(() => {
     if (isError(error)) {
-      console.log(error);
       isPolling.current = false;
     }
   }, [error]);
@@ -165,7 +164,7 @@ type InputProps = {
 };
 
 function NotesInput({ error }: InputProps) {
-  const [format, setFormat] = useState<InputFormat>("text");
+  const [format, setFormat] = useState<InputFormat>("pdf");
 
   function renderInput() {
     switch (format) {
@@ -251,7 +250,7 @@ function NotesInput({ error }: InputProps) {
 }
 
 function SyllabusInput({ error }: InputProps) {
-  const [format, setFormat] = useState<InputFormat>("text");
+  const [format, setFormat] = useState<InputFormat>("pdf");
 
   function renderInput() {
     switch (format) {

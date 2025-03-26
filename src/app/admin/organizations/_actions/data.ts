@@ -39,7 +39,7 @@ export async function getOrganizations(timeframe: Timeframe) {
       createdAt,
     },
   });
-  let organizations: Organization[] = [];
+  const organizations: Organization[] = [];
   for (const sale of sales) {
     const organization = organizations.find(
       (org) => org.id === sale.couponCode
