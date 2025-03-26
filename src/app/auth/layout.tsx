@@ -1,3 +1,4 @@
+import Footer from "@/components/footer";
 import db from "@/db/db";
 import { getSession } from "@/lib/auth";
 import { AUTH_REDIRECT_PATH } from "@/lib/constants";
@@ -9,7 +10,13 @@ export default async function AuthLayout({
   children: React.ReactNode;
 }) {
   const session = await getSession();
-  if (!session?.id) return children;
+  if (!session?.id)
+    return (
+      <>
+        {children}
+        <Footer absolute />
+      </>
+    );
   const user = await db.user.findUnique({ where: { id: session?.id } });
   if (!user) return children;
 

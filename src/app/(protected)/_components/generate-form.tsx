@@ -51,7 +51,7 @@ const MAX_POLL_COUNT = 12; // one minute
 export default function GenerateForm({ userId }: GenerateFormProps) {
   const [groupId] = useState(crypto.randomUUID());
   const isPolling = useRef(false);
-  const [inputType, setInputType] = useState<InputType>("courseInfo");
+  const [inputType, setInputType] = useState<InputType>("notes");
   const [error, action, isPending] = useActionState(
     handleGenerate.bind(null, groupId, userId, inputType),
     {}
