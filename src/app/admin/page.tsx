@@ -54,6 +54,7 @@ async function getRawSales() {
       pricePaidInPennies: true,
       productId: true,
       userId: true,
+      couponCode: true,
       user: {
         select: {
           email: true,
