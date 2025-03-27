@@ -20,11 +20,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useActionState, useEffect, useRef, useState } from "react";
+import {
+  FormEvent,
+  startTransition,
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { getFlashcardGroup, handleGenerate } from "../_actions/generate";
-import { Error, isError } from "@/lib/utils";
+import { CustomError, isError } from "@/lib/utils";
 import { InputFormat, InputType } from "@/lib/types";
 import { redirect } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 type GenerateError = {
   format?: string[];
@@ -70,6 +78,11 @@ export default function GenerateForm({ userId }: GenerateFormProps) {
         "Failed to get a response from the server in time, please check your flashcard groups to see if your flashcards have been generated"
       );
     }
+  }
+
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    startTransition(() => action(new FormData(e.currentTarget)));
   }
 
   useEffect(() => {
@@ -136,19 +149,24 @@ export default function GenerateForm({ userId }: GenerateFormProps) {
         <CardDescription>{getDescription()}</CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={action} className="flex flex-col gap-2">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
           {renderInput()}
           <Button
             type="submit"
             className="mt-6"
             disabled={isPolling.current || isPending}
           >
-            {isPolling.current || isPending ? "Generating..." : "Generate"}
+            {(isPolling.current || isPending) && (
+              <Loader2 className="animate-spin" />
+            )}
+            <span>
+              {isPolling.current || isPending ? "Generating..." : "Generate"}
+            </span>
           </Button>
-          {(error as Error).error && (
-            <p className="text-destructive">{(error as Error).error}</p>
+          {(error as CustomError).error && (
+            <p className="text-destructive">{(error as CustomError).error}</p>
           )}
-          {!(error as Error).error && pollTimeoutError && (
+          {!(error as CustomError).error && pollTimeoutError && (
             <p className="text-destructive">{pollTimeoutError}</p>
           )}
         </form>
@@ -169,7 +187,7 @@ function NotesInput({ error }: InputProps) {
       case "text":
         return (
           <>
-            <Textarea name="text" id="text" required />
+            <Textarea name="text" id="text" required className="resize-none" />
             {error.text && <p className="text-destructive">{error.text}</p>}
           </>
         );
@@ -247,7 +265,7 @@ function SyllabusInput({ error }: InputProps) {
       case "text":
         return (
           <>
-            <Textarea name="text" id="text" required />
+            <Textarea name="text" id="text" required className="resize-none" />
             {error.text && <p className="text-destructive">{error.text}</p>}
           </>
         );

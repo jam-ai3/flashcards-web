@@ -15,7 +15,6 @@ export default function Footer({ absolute = false }: FooterProps) {
             </Link>
           </li>
           <li>
-            {/* copyright info */}
             <span className="text-muted-foreground">&copy; 2025 JAMAi</span>
           </li>
           <li>

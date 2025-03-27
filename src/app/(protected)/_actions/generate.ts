@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import db from "@/db/db";
-import { Error, isError } from "@/lib/utils";
+import { CustomError, isError } from "@/lib/utils";
 import { InputFormat, InputType } from "@/lib/types";
 
 const generateSchema = z.object({
@@ -29,6 +29,7 @@ type PaymentResult = {
 
 type PaymentType = "free" | "single" | "subscription";
 
+// TODO: throw on file too large
 export async function handleGenerate(
   groupId: string,
   userId: string,
@@ -36,52 +37,56 @@ export async function handleGenerate(
   _: unknown,
   data: FormData
 ) {
-  // parse form data
-  const result = generateSchema.safeParse(Object.fromEntries(data.entries()));
-  if (!result.success) {
-    console.error(result.error);
-    return result.error.formErrors.fieldErrors;
+  try {
+    // parse form data
+    const result = generateSchema.safeParse(Object.fromEntries(data.entries()));
+    if (!result.success) return result.error.formErrors.fieldErrors;
+
+    // check user's payment options
+    const paymentOptions = await getPaymentOptions(userId);
+    if (isError(paymentOptions)) return paymentOptions;
+
+    // choose payment type
+    const paymentType = getPaymentType(paymentOptions);
+    if (isError(paymentType)) return paymentType;
+
+    const courseInfo =
+      inputType === "courseInfo"
+        ? JSON.stringify({
+            university: result.data.university,
+            department: result.data.department,
+            courseNumber: result.data.courseNumber,
+            courseName: result.data.courseName,
+          })
+        : undefined;
+
+    // send request to server to generate flashcards
+    const cards = await generateFlashcards({
+      inputType,
+      inputFormat: result.data.format,
+      paymentType,
+      groupId,
+      userId,
+      text: result.data.text,
+      pdf: result.data.pdf,
+      pptx: result.data.pptx,
+      image: result.data.image,
+      courseInfo,
+    });
+    if (isError(cards)) return cards;
+
+    return { error: undefined };
+  } catch (error) {
+    console.error(error);
+    return {
+      error: "An unknown error occurred, please refresh the page and try again",
+    };
   }
-
-  // check user's payment options
-  const paymentOptions = await getPaymentOptions(userId);
-  if (isError(paymentOptions)) return paymentOptions;
-
-  // choose payment type
-  const paymentType = getPaymentType(paymentOptions);
-  if (isError(paymentType)) return paymentType;
-
-  const courseInfo =
-    inputType === "courseInfo"
-      ? JSON.stringify({
-          university: result.data.university,
-          department: result.data.department,
-          courseNumber: result.data.courseNumber,
-          courseName: result.data.courseName,
-        })
-      : undefined;
-
-  // send request to server to generate flashcards
-  const cards = await generateFlashcards({
-    inputType,
-    inputFormat: result.data.format,
-    paymentType,
-    groupId,
-    userId,
-    text: result.data.text,
-    pdf: result.data.pdf,
-    pptx: result.data.pptx,
-    image: result.data.image,
-    courseInfo,
-  });
-  if (isError(cards)) return cards;
-
-  return { error: undefined };
 }
 
 async function getPaymentOptions(
   userId: string
-): Promise<PaymentResult | Error> {
+): Promise<PaymentResult | CustomError> {
   const [subscription, user] = await Promise.all([
     db.subscription.findUnique({
       where: { userId },
@@ -106,7 +111,7 @@ async function getPaymentOptions(
   };
 }
 
-function getPaymentType(payment: PaymentResult): PaymentType | Error {
+function getPaymentType(payment: PaymentResult): PaymentType | CustomError {
   if (payment.subscriptionType) {
     return "subscription";
   } else if (payment.paidGenerates > 0) {
@@ -141,7 +146,7 @@ async function generateFlashcards({
   pptx,
   image,
   courseInfo,
-}: GenerateArgs): Promise<string | Error> {
+}: GenerateArgs): Promise<string | CustomError> {
   try {
     const formData = new FormData();
     formData.append(

@@ -5,12 +5,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export type Error = {
+export type CustomError = {
   error: string;
   devError?: string;
 };
 
-export function isError<T>(response: T | Error): response is Error {
+export function isError<T>(response: T | CustomError): response is CustomError {
   return (
     typeof response === "object" && response !== null && "error" in response
   );
