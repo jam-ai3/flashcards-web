@@ -227,7 +227,7 @@ function NotesInput({ error }: InputProps) {
               <SelectLabel>Formats</SelectLabel>
               <SelectItem value="text">Text</SelectItem>
               <SelectItem value="pdf">PDF</SelectItem>
-              <SelectItem value="pptx">Power Point</SelectItem>
+              {/* <SelectItem value="pptx">Power Point</SelectItem> */}
               <SelectItem value="image">Image</SelectItem>
             </SelectGroup>
           </SelectContent>
