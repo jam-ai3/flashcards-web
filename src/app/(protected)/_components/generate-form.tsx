@@ -24,6 +24,7 @@ import {
   FormEvent,
   startTransition,
   useActionState,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -56,29 +57,52 @@ const MAX_POLL_COUNT = 12; // one minute
 
 export default function GenerateForm({ userId }: GenerateFormProps) {
   const [groupId] = useState(crypto.randomUUID());
-  const isPolling = useRef(false);
+  const [isPolling, setIsPolling] = useState(false);
   const [inputType, setInputType] = useState<InputType>("notes");
   const [error, action, isPending] = useActionState(
     handleGenerate.bind(null, groupId, userId, inputType),
     {}
   );
   const [pollTimeoutError, setPollTimeoutError] = useState<string | null>(null);
+  const pollRef = useRef<NodeJS.Timeout | null>(null);
 
   async function pollResource(groupId: string, depth = 0) {
     if (depth !== 0 && !isPolling) return;
+
     const exists = await getFlashcardGroup(groupId);
     if (exists) {
       redirect(`/flashcards/${groupId}`);
     }
+
     if (depth < MAX_POLL_COUNT) {
-      setTimeout(() => pollResource(groupId, depth + 1), POLL_INTERVAL);
+      if (pollRef.current) {
+        clearTimeout(pollRef.current);
+      }
+
+      pollRef.current = setTimeout(
+        () => pollResource(groupId, depth + 1),
+        POLL_INTERVAL
+      );
     } else {
-      isPolling.current = false;
+      setIsPolling(false);
       setPollTimeoutError(
         "Failed to get a response from the server in time, please check your flashcard groups to see if your flashcards have been generated"
       );
     }
   }
+
+  const startPolling = useCallback(() => {
+    if (isPolling) return;
+    setIsPolling(true);
+    pollResource(groupId);
+  }, [groupId]);
+
+  const stopPolling = useCallback(() => {
+    setIsPolling(false);
+    if (pollRef.current) {
+      clearTimeout(pollRef.current);
+    }
+  }, []);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -86,15 +110,14 @@ export default function GenerateForm({ userId }: GenerateFormProps) {
   }
 
   useEffect(() => {
-    if (isPending && !isPolling.current) {
-      isPolling.current = true;
-      pollResource(groupId);
+    if (isPending && !isPolling) {
+      startPolling();
     }
   }, [isPending, isPolling, pollResource]);
 
   useEffect(() => {
     if (isError(error)) {
-      isPolling.current = false;
+      stopPolling();
     }
   }, [error]);
 
@@ -154,14 +177,10 @@ export default function GenerateForm({ userId }: GenerateFormProps) {
           <Button
             type="submit"
             className="mt-6"
-            disabled={isPolling.current || isPending}
+            disabled={isPolling || isPending}
           >
-            {(isPolling.current || isPending) && (
-              <Loader2 className="animate-spin" />
-            )}
-            <span>
-              {isPolling.current || isPending ? "Generating..." : "Generate"}
-            </span>
+            {(isPolling || isPending) && <Loader2 className="animate-spin" />}
+            <span>{isPolling || isPending ? "Generating..." : "Generate"}</span>
           </Button>
           {(error as CustomError).error && (
             <p className="text-destructive">{(error as CustomError).error}</p>
