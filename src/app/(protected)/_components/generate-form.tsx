@@ -67,17 +67,12 @@ export default function GenerateForm({ userId }: GenerateFormProps) {
   const pollRef = useRef<NodeJS.Timeout | null>(null);
 
   async function pollResource(groupId: string, depth = 0) {
-    if (depth !== 0 && !isPolling) return;
-
     const exists = await getFlashcardGroup(groupId);
-    if (exists) {
-      redirect(`/flashcards/${groupId}`);
-    }
+    console.log(exists, groupId);
+    if (exists) redirect(`/flashcards/${groupId}`);
 
     if (depth < MAX_POLL_COUNT) {
-      if (pollRef.current) {
-        clearTimeout(pollRef.current);
-      }
+      if (pollRef.current) clearTimeout(pollRef.current);
 
       pollRef.current = setTimeout(
         () => pollResource(groupId, depth + 1),
