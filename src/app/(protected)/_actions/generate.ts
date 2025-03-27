@@ -6,15 +6,12 @@ import { Error, isError } from "@/lib/utils";
 import { InputFormat, InputType } from "@/lib/types";
 
 const generateSchema = z.object({
-  format: z.enum(["text", "pdf", "pptx"]).default("text"),
+  format: z.enum(["text", "pdf", "pptx", "image"]).default("text"),
 
-  notesText: z.string().optional(),
-  notesPdf: z.instanceof(File).optional(),
-  notesPptx: z.instanceof(File).optional(),
-
-  syllabusText: z.string().optional(),
-  syllabusPdf: z.instanceof(File).optional(),
-  syllabusPptx: z.instanceof(File).optional(),
+  text: z.string().optional(),
+  pdf: z.instanceof(File).optional(),
+  pptx: z.instanceof(File).optional(),
+  image: z.instanceof(File).optional(),
 
   university: z.string().optional(),
   department: z.string().optional(),
@@ -46,10 +43,6 @@ export async function handleGenerate(
     return result.error.formErrors.fieldErrors;
   }
 
-  // get text prompt from python server if pdf or pptx
-  const text = await formatText(inputType, result.data);
-  if (isError(text)) return text;
-
   // check user's payment options
   const paymentOptions = await getPaymentOptions(userId);
   if (isError(paymentOptions)) return paymentOptions;
@@ -58,79 +51,32 @@ export async function handleGenerate(
   const paymentType = getPaymentType(paymentOptions);
   if (isError(paymentType)) return paymentType;
 
+  const courseInfo =
+    inputType === "courseInfo"
+      ? JSON.stringify({
+          university: result.data.university,
+          department: result.data.department,
+          courseNumber: result.data.courseNumber,
+          courseName: result.data.courseName,
+        })
+      : undefined;
+
   // send request to server to generate flashcards
-  const cards = await generateFlashcards(
-    text,
+  const cards = await generateFlashcards({
     inputType,
-    result.data.format,
+    inputFormat: result.data.format,
     paymentType,
     groupId,
-    userId
-  );
+    userId,
+    text: result.data.text,
+    pdf: result.data.pdf,
+    pptx: result.data.pptx,
+    image: result.data.image,
+    courseInfo,
+  });
   if (isError(cards)) return cards;
 
   return { error: undefined };
-}
-
-async function formatText(
-  inputType: InputType,
-  data: z.infer<typeof generateSchema>
-): Promise<string | Error> {
-  const format = data.format;
-  let text;
-  if (format === "text") {
-    text =
-      inputType === "courseInfo"
-        ? JSON.stringify({
-            university: data.university,
-            department: data.department,
-            courseNumber: data.courseNumber,
-            courseName: data.courseName,
-          })
-        : inputType === "notes"
-        ? data.notesText
-        : data.syllabusText;
-  } else if (data.notesPdf) {
-    text = await parseFile(data.notesPdf, format);
-  } else if (data.notesPptx) {
-    text = await parseFile(data.notesPptx, format);
-  } else if (data.syllabusPdf) {
-    text = await parseFile(data.syllabusPdf, format);
-  } else if (data.syllabusPptx) {
-    text = await parseFile(data.syllabusPptx, format);
-  }
-  if (text === undefined) {
-    return { error: "Invalid input format" };
-  }
-  return text;
-}
-
-async function parseFile(
-  file: File,
-  format: "pdf" | "pptx"
-): Promise<string | Error> {
-  try {
-    const formData = new FormData();
-    formData.append(format, file);
-    const res = await fetch(`${process.env.PYTHON_SERVER_URL}/${format}`, {
-      method: "POST",
-      body: formData,
-    });
-    if (!res.ok) {
-      const json = await res.json();
-      return {
-        error: "Failed to parse file",
-        devError: json.devError ?? json.error,
-      };
-    }
-    return await res.json();
-  } catch (error) {
-    console.error(error);
-    return {
-      error: "Failed to parse file, please make sure it is not over 10MB",
-      devError: error as string,
-    };
-  }
 }
 
 async function getPaymentOptions(
@@ -171,28 +117,54 @@ function getPaymentType(payment: PaymentResult): PaymentType | Error {
   return { error: "No payment options available" };
 }
 
-async function generateFlashcards(
-  text: string,
-  inputType: InputType,
-  inputFormat: InputFormat,
-  paymentType: PaymentType,
-  groupId: string,
-  userId: string
-): Promise<string | Error> {
+type GenerateArgs = {
+  inputType: InputType;
+  inputFormat: InputFormat;
+  paymentType: PaymentType;
+  groupId: string;
+  userId: string;
+  text?: string;
+  pdf?: File;
+  pptx?: File;
+  image?: File;
+  courseInfo?: string;
+};
+
+async function generateFlashcards({
+  inputType,
+  inputFormat,
+  paymentType,
+  groupId,
+  userId,
+  text,
+  pdf,
+  pptx,
+  image,
+  courseInfo,
+}: GenerateArgs): Promise<string | Error> {
   try {
-    const res = await fetch(`${process.env.PYTHON_SERVER_URL}/generate`, {
-      method: "POST",
-      body: JSON.stringify({
-        text,
+    const formData = new FormData();
+    formData.append(
+      "data",
+      JSON.stringify({
         inputType,
         inputFormat,
         paymentType,
         groupId,
         userId,
-      }),
+      })
+    );
+    if (text) formData.append("text", text);
+    if (pdf) formData.append("pdf", pdf);
+    if (pptx) formData.append("pptx", pptx);
+    if (image) formData.append("image", image);
+    if (courseInfo) formData.append("courseInfo", courseInfo);
+
+    const res = await fetch(`${process.env.PYTHON_SERVER_URL}/generate`, {
+      method: "POST",
+      body: formData,
       headers: {
         Authorization: `Bearer ${process.env.PYTHON_SERVER_API_KEY}`,
-        "Content-Type": "application/json",
       },
     });
     if (!res.ok) {
@@ -212,6 +184,7 @@ async function generateFlashcards(
   }
 }
 
+// Used for polling
 export async function getFlashcardGroup(groupId: string) {
   const group = await db.flashcardGroup.findUnique({
     where: { id: groupId },

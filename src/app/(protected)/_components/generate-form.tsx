@@ -28,12 +28,10 @@ import { redirect } from "next/navigation";
 
 type GenerateError = {
   format?: string[];
-  notesText?: string[];
-  notesPdf?: string[];
-  notesPptx?: string[];
-  syllabusText?: string[];
-  syllabusPdf?: string[];
-  syllabusPptx?: string[];
+  text?: string[];
+  pdf?: string[];
+  pptx?: string[];
+  image?: string[];
   university?: string[];
   department?: string[];
   courseNumber?: string[];
@@ -171,40 +169,35 @@ function NotesInput({ error }: InputProps) {
       case "text":
         return (
           <>
-            <Textarea name="notesText" id="notesText" required />
-            {error.notesText && (
-              <p className="text-destructive">{error.notesText}</p>
-            )}
+            <Textarea name="text" id="text" required />
+            {error.text && <p className="text-destructive">{error.text}</p>}
           </>
         );
       case "pdf":
         return (
           <>
-            <Input
-              type="file"
-              name="notesPdf"
-              id="notesPdf"
-              accept=".pdf"
-              required
-            />
-            {error.notesPdf && (
-              <p className="text-destructive">{error.notesPdf}</p>
-            )}
+            <Input type="file" name="pdf" id="pdf" accept=".pdf" required />
+            {error.pdf && <p className="text-destructive">{error.pdf}</p>}
           </>
         );
       case "pptx":
         return (
           <>
+            <Input type="file" name="pptx" id="pptx" accept=".pptx" required />
+            {error.pptx && <p className="text-destructive">{error.pptx}</p>}
+          </>
+        );
+      case "image":
+        return (
+          <>
             <Input
               type="file"
-              name="notesPptx"
-              id="notesPptx"
-              accept=".pptx"
+              name="image"
+              id="image"
+              accept="image/png, image/jpeg, image/jpg"
               required
             />
-            {error.notesPptx && (
-              <p className="text-destructive">{error.notesPptx}</p>
-            )}
+            {error.image && <p className="text-destructive">{error.image}</p>}
           </>
         );
     }
@@ -215,11 +208,7 @@ function NotesInput({ error }: InputProps) {
       <div className="flex justify-between">
         <Label
           htmlFor={
-            format === "text"
-              ? "notesText"
-              : format === "pdf"
-              ? "notesPdf"
-              : "notesPptx"
+            format === "text" ? "text" : format === "pdf" ? "pdf" : "pptx"
           }
         >
           Notes
@@ -239,6 +228,7 @@ function NotesInput({ error }: InputProps) {
               <SelectItem value="text">Text</SelectItem>
               <SelectItem value="pdf">PDF</SelectItem>
               <SelectItem value="pptx">Power Point</SelectItem>
+              <SelectItem value="image">Image</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -257,40 +247,15 @@ function SyllabusInput({ error }: InputProps) {
       case "text":
         return (
           <>
-            <Textarea name="syllabusText" id="syllabusText" required />
-            {error.syllabusText && (
-              <p className="text-destructive">{error.syllabusText}</p>
-            )}
+            <Textarea name="text" id="text" required />
+            {error.text && <p className="text-destructive">{error.text}</p>}
           </>
         );
       case "pdf":
         return (
           <>
-            <Input
-              type="file"
-              name="syllabusPdf"
-              id="syllabusPdf"
-              accept=".pdf"
-              required
-            />
-            {error.syllabusPdf && (
-              <p className="text-destructive">{error.syllabusPdf}</p>
-            )}
-          </>
-        );
-      case "pptx":
-        return (
-          <>
-            <Input
-              type="file"
-              name="syllabusPptx"
-              id="syllabusPptx"
-              accept=".pptx"
-              required
-            />
-            {error.syllabusPptx && (
-              <p className="text-destructive">{error.syllabusPptx}</p>
-            )}
+            <Input type="file" name="pdf" id="pdf" accept=".pdf" required />
+            {error.pdf && <p className="text-destructive">{error.pdf}</p>}
           </>
         );
     }
@@ -301,11 +266,7 @@ function SyllabusInput({ error }: InputProps) {
       <div className="flex justify-between">
         <Label
           htmlFor={
-            format === "text"
-              ? "syllabusText"
-              : format === "pdf"
-              ? "syllabusPdf"
-              : "syllabusPptx"
+            format === "text" ? "text" : format === "pdf" ? "pdf" : "pptx"
           }
         >
           Syllabus
@@ -327,7 +288,6 @@ function SyllabusInput({ error }: InputProps) {
               <SelectLabel>Formats</SelectLabel>
               <SelectItem value="text">Text</SelectItem>
               <SelectItem value="pdf">PDF</SelectItem>
-              <SelectItem value="pptx">Power Point</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
