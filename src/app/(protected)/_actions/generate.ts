@@ -175,7 +175,8 @@ async function generateFlashcards({
     if (!res.ok) {
       const json = await res.json();
       return {
-        error: "Failed to generate flashcards",
+        error:
+          json.error ?? "Failed to generate flashcards, please try again later",
         devError: json.devError ?? json.error,
       };
     }
@@ -183,7 +184,7 @@ async function generateFlashcards({
   } catch (error) {
     console.error(error);
     return {
-      error: "Failed to generate flashcards",
+      error: "Failed to generate flashcards, please try again later",
       devError: "Server failed to generate response",
     };
   }

@@ -130,9 +130,9 @@ export default function GenerateForm({ userId }: GenerateFormProps) {
   function getDescription() {
     switch (inputType) {
       case "notes":
-        return "Upload a pdf, powerpoint, or just paste your notes to generate flashcards. Please note that handwritten notes are not supported at this time.";
+        return "Upload a pdf, image, or just paste your notes to generate flashcards.";
       case "syllabus":
-        return "Upload a pdf, powerpoint, or just paste your syllabus to generate flashcards.";
+        return "Upload a pdf or just paste your syllabus to generate flashcards.";
       case "courseInfo":
         return "Enter some information about your course to generate flashcards.";
     }

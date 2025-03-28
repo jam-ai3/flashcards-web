@@ -90,7 +90,7 @@ export default function FlashcardGrid({
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-4 pb-6">
           {flashcards.map((flashcard) => (
             <FlashcardView
               key={flashcard.id}
@@ -123,7 +123,7 @@ function FlashcardView({
       onClick={handleSelect.bind(null, flashcard)}
       className="cursor-pointer relative"
     >
-      <CardContent>
+      <CardContent className="space-y-4">
         <div className="absolute top-2 right-2 accent-accent">
           {isSelected ? (
             <CircleCheck size={CIRCLE_SIZE} />
@@ -132,6 +132,7 @@ function FlashcardView({
           )}
         </div>
         <p>{flashcard.front}</p>
+        <div className="bg-muted w-full h-px" />
         <p>{flashcard.back}</p>
       </CardContent>
     </Card>
