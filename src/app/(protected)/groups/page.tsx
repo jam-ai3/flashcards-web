@@ -18,7 +18,7 @@ export default async function GroupsPage() {
         <Link key={group.id} href={`/flashcards/${group.id}`}>
           <li className="flex justify-between items-center rounded-md border bg-secondary py-2 px-4 text-primary">
             <div>
-              <p className="font-semibold">Group #{index + 1}</p>
+              <p className="font-semibold">Generation #{index + 1}</p>
               <p className="text-muted-foreground">
                 {group.createdAt.toLocaleString()}
               </p>

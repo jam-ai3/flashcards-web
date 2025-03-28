@@ -12,19 +12,30 @@ export default async function Header() {
         </h1>
       </Link>
       <div className="flex gap-8">
+        <Link href="/about">
+          <span className="text-primary">About</span>
+        </Link>
+        <Link href="/feedback">
+          <span className="text-primary">Feedback</span>
+        </Link>
         {session ? (
           <>
             <Link href="/groups">
               <span className="text-primary">Flashcards</span>
             </Link>
             <Link href="/plan">
-              <span className="text-primary">Plan</span>
+              <span className="text-primary">Account</span>
             </Link>
           </>
         ) : (
-          <Link href="/auth/login">
-            <span className="text-primary">Login</span>
-          </Link>
+          <>
+            <Link href="/auth/login">
+              <span className="text-primary">Login</span>
+            </Link>
+            <Link href="/auth/register">
+              <span className="text-primary">Register</span>
+            </Link>
+          </>
         )}
       </div>
     </nav>

@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { MAX_FREE_TIER_FLASHCARDS } from "@/lib/constants";
 import { exportCsv } from "@/lib/utils";
 import { Flashcard, FlashcardGroup } from "@prisma/client";
-import { Book, Circle, CircleCheck, Info } from "lucide-react";
+import { ArrowLeft, Book, Circle, CircleCheck, Info } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -45,9 +45,14 @@ export default function FlashcardGrid({
     <>
       <div className="flex justify-between items-center">
         <div>
-          <p className="text-muted-foreground">
-            {formatPaymentString(group.paymentType)}
-          </p>
+          <div className="flex gap-2">
+            <Link href="/" className="flex gap-2 items-center">
+              <ArrowLeft className="text-muted-foreground" size={16} />
+            </Link>
+            <p className="text-muted-foreground">
+              {formatPaymentString(group.paymentType)}
+            </p>
+          </div>
           {group.paymentType === "free" && (
             <div className="text-yellow-500 flex items-center gap-2">
               <Info />

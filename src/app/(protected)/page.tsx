@@ -10,8 +10,8 @@ export default async function HomePage() {
   return (
     <div className="grid grid-cols-2 h-full">
       <section className="flex flex-col gap-4 justify-center items-center">
-        <h2 className="font-semibold text-2xl">Generate flashcards</h2>
-        <p className="text-center w-3/4 text-muted-foreground">
+        <h2 className="font-semibold text-4xl">Generate flashcards</h2>
+        <p className="text-center w-3/4 text-muted-foreground text-lg">
           Upload your notes, syllabus, or some information about your course to
           get started generating flashcards.
         </p>
