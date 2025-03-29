@@ -1,5 +1,10 @@
 import Header from "@/components/header";
+import { Metadata } from "next";
 import React from "react";
+
+export const metadata: Metadata = {
+  robots: "noindex, nofollow",
+};
 
 export default function ProtectedLayout({
   children,

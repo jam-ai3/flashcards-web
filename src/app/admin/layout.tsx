@@ -1,4 +1,10 @@
+import { Metadata } from "next";
 import AdminHeader from "./_components/admin-header";
+
+export const metadata: Metadata = {
+  robots: "noindex, nofollow",
+  title: "Admin",
+};
 
 export default function AdminLayout({
   children,
