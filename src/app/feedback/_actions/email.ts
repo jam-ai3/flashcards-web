@@ -21,8 +21,7 @@ export async function sendEmail(_: unknown, data: FormData) {
       { name, email, message },
       process.env.NEXT_PUBLIC_EMAIL_JS_PUBLIC_KEY!
     );
-  } catch (err: any) {
-    console.error(err);
+  } catch {
     return { error: "Failed to send email" };
   }
 
