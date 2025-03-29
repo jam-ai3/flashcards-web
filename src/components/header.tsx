@@ -14,10 +14,10 @@ export default async function Header() {
       <div className="flex gap-8">
         {/* <Link href="/about">
           <span className="text-primary">About</span>
-        </Link>
+        </Link> */}
         <Link href="/feedback">
           <span className="text-primary">Feedback</span>
-        </Link> */}
+        </Link>
         {session ? (
           <>
             <Link href="/groups">

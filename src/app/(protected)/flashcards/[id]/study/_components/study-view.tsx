@@ -3,7 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Flashcard } from "@prisma/client";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 type StudyViewProps = {
   flashcards: Flashcard[];
@@ -47,16 +48,33 @@ type FlashcardViewProps = {
 function FlashcardView({ flashcard }: FlashcardViewProps) {
   const [side, setSide] = useState<"front" | "back">("front");
 
+  useEffect(() => {
+    setSide("front");
+  }, [flashcard]);
+
   return (
     <div
+      className="relative w-1/2 aspect-video cursor-pointer"
       onClick={() => setSide(side === "front" ? "back" : "front")}
-      className={`border-2 rounded-xl aspect-video w-1/2 grid place-items-center cursor-pointer p-6 ${
-        side === "back" ? "bg-secondary" : ""
-      }`}
     >
-      <p className="text-lg text-center">
-        {side === "front" ? flashcard.front : flashcard.back}
-      </p>
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center border-2 rounded-xl p-6 bg-white"
+        initial={{ rotateY: 0 }}
+        animate={{ rotateY: side === "front" ? 0 : 180 }}
+        transition={{ duration: 0.5 }}
+        style={{ backfaceVisibility: "hidden" }}
+      >
+        <p className="text-lg text-center">{flashcard.front}</p>
+      </motion.div>
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center border-2 rounded-xl p-6 bg-secondary"
+        initial={{ rotateY: -180 }}
+        animate={{ rotateY: side === "front" ? -180 : 0 }}
+        transition={{ duration: 0.5 }}
+        style={{ backfaceVisibility: "hidden" }}
+      >
+        <p className="text-lg text-center">{flashcard.back}</p>
+      </motion.div>
     </div>
   );
 }
