@@ -1,6 +1,13 @@
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import { ContactForm } from "./_components/contact-form";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Feedback",
+  description:
+    "Let us know what features you'd like to see next or what we can improve on",
+};
 
 export default function FeedbackPage() {
   return (

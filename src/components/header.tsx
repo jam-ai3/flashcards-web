@@ -1,5 +1,6 @@
 import { getSession } from "@/lib/auth";
 import Link from "next/link";
+import NavbarLink from "./navbar-link";
 
 export default async function Header() {
   const session = await getSession();
@@ -12,29 +13,17 @@ export default async function Header() {
         </h1>
       </Link>
       <div className="flex gap-8">
-        {/* <Link href="/about">
-          <span className="text-primary">About</span>
-        </Link> */}
-        <Link href="/feedback">
-          <span className="text-primary">Feedback</span>
-        </Link>
+        {/* <NavbarLink href="/about" title="About" /> */}
+        <NavbarLink href="/feedback" title="Feedback" />
         {session ? (
           <>
-            <Link href="/groups">
-              <span className="text-primary">Flashcards</span>
-            </Link>
-            <Link href="/plan">
-              <span className="text-primary">Account</span>
-            </Link>
+            <NavbarLink href="/groups" title="Flashcards" />
+            <NavbarLink href="/account" title="Account" />
           </>
         ) : (
           <>
-            <Link href="/auth/login">
-              <span className="text-primary">Login</span>
-            </Link>
-            <Link href="/auth/register">
-              <span className="text-primary">Register</span>
-            </Link>
+            <NavbarLink href="/auth/login" title="Login" />
+            <NavbarLink href="/auth/register" title="Register" />
           </>
         )}
       </div>
