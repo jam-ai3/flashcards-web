@@ -43,7 +43,9 @@ export async function handleLogin(_: unknown, data: FormData) {
     value: token,
     httpOnly: true,
     secure: true,
-    sameSite: "strict",
+    sameSite: "none",
+    domain: process.env.DOMAIN!,
+    path: "/",
   });
 
   redirect(AUTH_REDIRECT_PATH);
@@ -84,7 +86,9 @@ export async function handleRegister(_: unknown, data: FormData) {
     value: token,
     httpOnly: true,
     secure: true,
-    sameSite: "strict",
+    sameSite: "none",
+    domain: process.env.DOMAIN!,
+    path: "/",
   });
 
   redirect(AUTH_REDIRECT_PATH);
