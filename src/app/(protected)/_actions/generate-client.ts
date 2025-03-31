@@ -9,7 +9,6 @@ import {
   serverRedirect,
 } from "./generate";
 import { CustomError, isError } from "@/lib/utils";
-import { redirect } from "next/navigation";
 
 const generateSchema = z.object({
   format: z.enum(["text", "pdf", "pptx", "image"]).default("text"),
