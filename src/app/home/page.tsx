@@ -2,6 +2,7 @@ import Footer from "@/components/footer";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/auth";
+import { LOGIN_PAGE_URL } from "@/lib/constants";
 import { ArrowRight, LogIn } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,7 +27,7 @@ export default async function HomePage() {
                 Quizlet to study.
               </p>
               <Button asChild className="w-fit">
-                <Link href={session ? "/" : "/auth/login"}>
+                <Link href={session ? "/" : LOGIN_PAGE_URL}>
                   <span className="text-background">
                     {session ? "Generate Flashcards" : "Login"}
                   </span>

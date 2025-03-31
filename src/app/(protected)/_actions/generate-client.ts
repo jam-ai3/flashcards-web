@@ -1,11 +1,16 @@
 "use client";
 
-import { InputFormat, InputType, PaymentType, RawFlashcard } from "@/lib/types";
+import {
+  InputFormat,
+  InputType,
+  PaymentResult,
+  PaymentType,
+  RawFlashcard,
+} from "@/lib/types";
 import { z } from "zod";
 import {
   createFlashcards,
   getPaymentOptions,
-  getPaymentType,
   serverRedirect,
 } from "./generate";
 import { CustomError, isError } from "@/lib/utils";
@@ -90,6 +95,17 @@ export async function handleGenerate(
       error: `An unknown error occurred, please refresh the page and try again, error: ${error}`,
     };
   }
+}
+
+function getPaymentType(payment: PaymentResult): PaymentType | CustomError {
+  if (payment.subscriptionType) {
+    return "subscription";
+  } else if (payment.paidGenerates > 0) {
+    return "single";
+  } else if (payment.freeGenerates > 0) {
+    return "free";
+  }
+  return { error: "No payment options available" };
 }
 
 type GenerateArgs = {

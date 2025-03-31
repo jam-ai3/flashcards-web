@@ -1,11 +1,11 @@
 import GenerateForm from "./_components/generate-form";
 import { redirect } from "next/navigation";
-import { UNAUTH_REDIRECT_PATH } from "@/lib/constants";
 import { getSession } from "@/lib/auth";
+import { LANDING_PAGE_URL } from "@/lib/constants";
 
 export default async function HomePage() {
   const session = await getSession();
-  if (!session) redirect(UNAUTH_REDIRECT_PATH);
+  if (!session) redirect(LANDING_PAGE_URL);
 
   return (
     <div className="grid grid-cols-2 h-full">

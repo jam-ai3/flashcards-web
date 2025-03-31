@@ -2,16 +2,13 @@
 
 import db from "@/db/db";
 import { CustomError } from "@/lib/utils";
-import { InputFormat, InputType, RawFlashcard } from "@/lib/types";
+import {
+  InputFormat,
+  InputType,
+  PaymentResult,
+  RawFlashcard,
+} from "@/lib/types";
 import { redirect } from "next/navigation";
-
-type PaymentResult = {
-  subscriptionType: string | null;
-  subscriptionExpiresAt: Date | null;
-  subscriptionGeneratesUsed: number | null;
-  freeGenerates: number;
-  paidGenerates: number;
-};
 
 type PaymentType = "free" | "single" | "subscription";
 
@@ -40,19 +37,6 @@ export async function getPaymentOptions(
     freeGenerates: user.freeGenerates,
     paidGenerates: user.paidGenerates,
   };
-}
-
-export async function getPaymentType(
-  payment: PaymentResult
-): Promise<PaymentType | CustomError> {
-  if (payment.subscriptionType) {
-    return "subscription";
-  } else if (payment.paidGenerates > 0) {
-    return "single";
-  } else if (payment.freeGenerates > 0) {
-    return "free";
-  }
-  return { error: "No payment options available" };
 }
 
 export async function createFlashcards(

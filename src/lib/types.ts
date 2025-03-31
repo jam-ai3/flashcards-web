@@ -6,3 +6,10 @@ export type RawFlashcard = {
   front: string;
   back: string;
 };
+export type PaymentResult = {
+  subscriptionType: string | null;
+  subscriptionExpiresAt: Date | null;
+  subscriptionGeneratesUsed: number | null;
+  freeGenerates: number;
+  paidGenerates: number;
+};

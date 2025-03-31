@@ -1,45 +1,14 @@
 export const MONTH_IN_MS = 1000 * 60 * 60 * 24 * 30;
 export const YEAR_IN_MS = 1000 * 60 * 60 * 24 * 365;
 export const TABLE_ROWS_PER_PAGE = 15;
-export const UNAUTH_REDIRECT_PATH = "/home";
-export const AUTH_REDIRECT_PATH = "/";
+
+export const HOME_SITE_URL = "https://jamai.dev";
+export const LOGIN_PAGE_URL = `${HOME_SITE_URL}/login`;
+export const REGISTER_PAGE_URL = `${HOME_SITE_URL}/register`;
+export const PRODUCT_PAGE_URL = `${HOME_SITE_URL}/pricing`;
+export const ACCOUNT_PAGE_URL = `${HOME_SITE_URL}/account`;
+export const APP_URL = "/";
+export const LANDING_PAGE_URL = "/home";
+
 export const ADMIN_PATH_PREFIX = "/admin";
 export const MAX_FREE_TIER_FLASHCARDS = 9;
-
-export type Product = {
-  id: string;
-  name: string;
-  description: string;
-  priceInPennies: number;
-  isSubscription: boolean;
-  subscriptionInterval: "day" | "week" | "month" | "year";
-};
-
-export const PRODUCTS: Record<string, Product> = {
-  single: {
-    id: "0",
-    name: "Single Generate",
-    description: "A one-time purchase of a single use of flashcards generator",
-    priceInPennies: 99,
-    isSubscription: false,
-    subscriptionInterval: "year",
-  },
-  monthly: {
-    id: "1",
-    name: "Monthly Subscription",
-    description: "Unlimited use of flashcards generator for a one-month period",
-    priceInPennies: 799,
-    isSubscription: true,
-    subscriptionInterval: "month",
-  },
-  yearly: {
-    id: "2",
-    name: "Yearly Subscription",
-    description: "Unlimited use of flashcards generator for a one-year period",
-    priceInPennies: 7999,
-    isSubscription: true,
-    subscriptionInterval: "year",
-  },
-};
-
-export const PRODUCTS_ARRAY: Product[] = Object.values(PRODUCTS);

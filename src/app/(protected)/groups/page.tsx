@@ -1,13 +1,13 @@
 import db from "@/db/db";
 import { getSession } from "@/lib/auth";
-import { UNAUTH_REDIRECT_PATH } from "@/lib/constants";
+import { LANDING_PAGE_URL } from "@/lib/constants";
 import { CircleCheck, CircleX } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function GroupsPage() {
   const session = await getSession();
-  if (!session) redirect(UNAUTH_REDIRECT_PATH);
+  if (!session) redirect(LANDING_PAGE_URL);
   const groups = await db.flashcardGroup.findMany({
     where: { userId: session.id },
   });
