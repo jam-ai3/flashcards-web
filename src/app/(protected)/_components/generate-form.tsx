@@ -20,20 +20,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  FormEvent,
-  startTransition,
-  useActionState,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { getFlashcardGroup, handleGenerate } from "../_actions/generate";
-import { CustomError, isError } from "@/lib/utils";
+import { useActionState, useState } from "react";
+import { CustomError } from "@/lib/utils";
 import { InputFormat, InputType } from "@/lib/types";
-import { redirect } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { handleGenerate } from "../_actions/generate-client";
 
 type GenerateError = {
   format?: string[];
@@ -52,69 +43,13 @@ type GenerateFormProps = {
   userId: string;
 };
 
-const POLL_INTERVAL = 5000;
-const MAX_POLL_COUNT = 12; // one minute
-
 export default function GenerateForm({ userId }: GenerateFormProps) {
   const [groupId] = useState(crypto.randomUUID());
-  const [isPolling, setIsPolling] = useState(false);
   const [inputType, setInputType] = useState<InputType>("notes");
   const [error, action, isPending] = useActionState(
     handleGenerate.bind(null, groupId, userId, inputType),
     {}
   );
-  const [pollTimeoutError, setPollTimeoutError] = useState<string | null>(null);
-  const pollRef = useRef<NodeJS.Timeout | null>(null);
-
-  async function pollResource(groupId: string, depth = 0) {
-    const exists = await getFlashcardGroup(groupId);
-    console.log(exists, groupId);
-    if (exists) redirect(`/flashcards/${groupId}`);
-
-    if (depth < MAX_POLL_COUNT) {
-      if (pollRef.current) clearTimeout(pollRef.current);
-
-      pollRef.current = setTimeout(
-        () => pollResource(groupId, depth + 1),
-        POLL_INTERVAL
-      );
-    } else {
-      setIsPolling(false);
-      setPollTimeoutError(
-        "Failed to get a response from the server in time, please check your flashcard groups to see if your flashcards have been generated"
-      );
-    }
-  }
-
-  const startPolling = useCallback(() => {
-    if (isPolling) return;
-    setIsPolling(true);
-    pollResource(groupId);
-  }, [groupId]);
-
-  const stopPolling = useCallback(() => {
-    setIsPolling(false);
-    if (pollRef.current) {
-      clearTimeout(pollRef.current);
-    }
-  }, []);
-
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    startTransition(() => action(new FormData(e.currentTarget)));
-  }
-
-  useEffect(() => {
-    if (isPending && !isPolling) {
-      startPolling();
-    }
-  }, [isPending, isPolling, pollResource]);
-
-  useEffect(() => {
-    if (isError(error)) {
-      stopPolling();
-    }
-  }, [error]);
 
   function renderInput() {
     switch (inputType) {
@@ -167,21 +102,14 @@ export default function GenerateForm({ userId }: GenerateFormProps) {
         <CardDescription>{getDescription()}</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+        <form action={action} className="flex flex-col gap-2">
           {renderInput()}
-          <Button
-            type="submit"
-            className="mt-6"
-            disabled={isPolling || isPending}
-          >
-            {(isPolling || isPending) && <Loader2 className="animate-spin" />}
-            <span>{isPolling || isPending ? "Generating..." : "Generate"}</span>
+          <Button type="submit" className="mt-6" disabled={isPending}>
+            {isPending && <Loader2 className="animate-spin" />}
+            <span>{isPending ? "Generating..." : "Generate"}</span>
           </Button>
           {(error as CustomError).error && (
             <p className="text-destructive">{(error as CustomError).error}</p>
-          )}
-          {!(error as CustomError).error && pollTimeoutError && (
-            <p className="text-destructive">{pollTimeoutError}</p>
           )}
         </form>
       </CardContent>
