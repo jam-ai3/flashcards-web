@@ -12,3 +12,35 @@ export const LANDING_PAGE_URL = "/home";
 
 export const ADMIN_PATH_PREFIX = "/admin";
 export const MAX_FREE_TIER_FLASHCARDS = 9;
+
+export type Product = {
+  id: string;
+  name: string;
+  description: string;
+  priceInPennies: number;
+  isSubscription: boolean;
+  subscriptionInterval: "day" | "week" | "month" | "year";
+  discount?: number;
+};
+
+export const PRODUCTS: Record<string, Product> = {
+  monthly: {
+    id: "1",
+    name: "Monthly Subscription",
+    description: "Unlimited use of flashcards generator for a one-month period",
+    priceInPennies: 499,
+    isSubscription: true,
+    subscriptionInterval: "month",
+  },
+  yearly: {
+    id: "2",
+    name: "Yearly Subscription",
+    description: "Unlimited use of flashcards generator for a one-year period",
+    priceInPennies: 4999,
+    isSubscription: true,
+    subscriptionInterval: "year",
+    discount: 0.17,
+  },
+};
+
+export const PRODUCTS_ARRAY: Product[] = Object.values(PRODUCTS);
