@@ -46,7 +46,7 @@ export async function handleGenerate(
     if (isError(paymentOptions)) return paymentOptions;
 
     // choose payment type
-    const paymentType = await getPaymentType(paymentOptions);
+    const paymentType = getPaymentType(paymentOptions);
     if (isError(paymentType)) return paymentType;
 
     const courseInfo =
@@ -98,14 +98,9 @@ export async function handleGenerate(
 }
 
 function getPaymentType(payment: PaymentResult): PaymentType | CustomError {
-  if (payment.subscriptionType) {
-    return "subscription";
-  } else if (payment.paidGenerates > 0) {
-    return "single";
-  } else if (payment.freeGenerates > 0) {
-    return "free";
-  }
-  return { error: "No payment options available" };
+  return payment.subscriptionType !== null
+    ? payment.subscriptionType
+    : { error: "No active subscription, please check your account page" };
 }
 
 type GenerateArgs = {
@@ -121,7 +116,7 @@ type GenerateArgs = {
   courseInfo?: string;
 };
 
-export async function generateFlashcards({
+async function generateFlashcards({
   inputType,
   inputFormat,
   paymentType,

@@ -22,8 +22,6 @@ async function getCustomerData(id: string) {
     select: {
       email: true,
       createdAt: true,
-      freeGenerates: true,
-      paidGenerates: true,
       subscriptions: {
         select: {
           type: true,
@@ -93,8 +91,6 @@ export default async function CustomerPage({ params }: CustomerPageProps) {
             label="Subscription Expires"
             value={subscription?.expiresAt.toLocaleDateString() ?? "N/A"}
           />
-          <InfoLine label="Free Generates" value={customer.freeGenerates} />
-          <InfoLine label="Paid Generates" value={customer.paidGenerates} />
           <InfoLine
             label="Subscription Generates Used"
             value={subscription?.generatesUsed ?? "N/A"}

@@ -16,8 +16,6 @@ export async function middleware(req: NextRequest) {
   const newToken = await signToken({
     id: user.id,
     email: user.email,
-    freeGenerates: user.freeGenerates,
-    paidGenerates: user.paidGenerates,
     isAdmin: user.isAdmin,
   });
   req.cookies.set(process.env.JWT_KEY!, newToken);

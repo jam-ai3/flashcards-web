@@ -1,3 +1,4 @@
+export const WEEK_IN_MS = 1000 * 60 * 60 * 24 * 7;
 export const MONTH_IN_MS = 1000 * 60 * 60 * 24 * 30;
 export const YEAR_IN_MS = 1000 * 60 * 60 * 24 * 365;
 export const TABLE_ROWS_PER_PAGE = 15;

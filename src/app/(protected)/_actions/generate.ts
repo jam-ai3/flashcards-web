@@ -9,6 +9,7 @@ import {
   RawFlashcard,
 } from "@/lib/types";
 import { redirect } from "next/navigation";
+import { WEEK_IN_MS } from "@/lib/constants";
 
 type PaymentType = "free" | "single" | "subscription";
 
@@ -22,20 +23,22 @@ export async function getPaymentOptions(
     }),
     db.user.findUnique({
       where: { id: userId },
-      select: { freeGenerates: true, paidGenerates: true },
+      select: { createdAt: true },
     }),
   ]);
 
-  if (!user) {
-    return { error: "User not found" };
-  }
+  if (!user) return { error: "User not found" };
+
+  const subscriptionType =
+    subscription && subscription.expiresAt.getTime() > Date.now()
+      ? "subscription"
+      : user.createdAt.getTime() + WEEK_IN_MS > Date.now()
+      ? "free"
+      : null;
 
   return {
-    subscriptionType: subscription?.type ?? null,
-    subscriptionExpiresAt: subscription?.expiresAt ?? null,
+    subscriptionType,
     subscriptionGeneratesUsed: subscription?.generatesUsed ?? null,
-    freeGenerates: user.freeGenerates,
-    paidGenerates: user.paidGenerates,
   };
 }
 

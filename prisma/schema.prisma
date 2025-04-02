@@ -9,14 +9,12 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(uuid())
-  email         String   @unique
-  password      String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  freeGenerates Int      @default(4)
-  paidGenerates Int      @default(0)
-  isAdmin       Boolean  @default(false)
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isAdmin   Boolean  @default(false)
 
   subscriptions Subscription[]
   groups        FlashcardGroup[]
