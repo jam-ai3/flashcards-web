@@ -23,7 +23,7 @@ export async function getPaymentOptions(
     }),
     db.user.findUnique({
       where: { id: userId },
-      select: { createdAt: true },
+      select: { freeTrialStart: true },
     }),
   ]);
 
@@ -32,7 +32,8 @@ export async function getPaymentOptions(
   const subscriptionType =
     subscription && subscription.expiresAt.getTime() > Date.now()
       ? "subscription"
-      : user.createdAt.getTime() + WEEK_IN_MS > Date.now()
+      : user.freeTrialStart &&
+        user.freeTrialStart.getTime() + WEEK_IN_MS > Date.now()
       ? "free"
       : null;
 

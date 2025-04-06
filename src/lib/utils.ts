@@ -49,6 +49,7 @@ export function formatNumber(num: number) {
 export function isSubscribed(user: User, subscription: Subscription | null) {
   return (
     (subscription && subscription.expiresAt.getTime() > Date.now()) ||
-    user.createdAt.getTime() + WEEK_IN_MS > Date.now()
+    (user.freeTrialStart &&
+      user.freeTrialStart.getTime() + WEEK_IN_MS > Date.now())
   );
 }
