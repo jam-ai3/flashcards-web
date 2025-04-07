@@ -1,4 +1,6 @@
-import { getSession } from "@/lib/auth";
+"use client";
+
+import Image from "next/image";
 import Link from "next/link";
 import NavbarLink from "./navbar-link";
 import {
@@ -6,15 +8,13 @@ import {
   LOGIN_PAGE_URL,
   REGISTER_PAGE_URL,
 } from "@/lib/constants";
-import Image from "next/image";
+import { HeaderProps } from "./client-header";
 
 const LOGO_SIZE = 64;
 
-export default async function Header() {
-  const session = await getSession();
-
+export default function FullHeader({ session }: HeaderProps) {
   return (
-    <nav className="flex justify-between">
+    <nav className="flex justify-between items-center">
       <Link href="/" className="flex items-center gap-2">
         <Image
           src="/logo-no-bg.png"
@@ -22,9 +22,9 @@ export default async function Header() {
           width={LOGO_SIZE}
           height={LOGO_SIZE}
         />
-        <h1 className="font-semibold text-2xl text-primary">
-          Flashcards Generator
-        </h1>
+        <span className="font-semibold text-lg lg:text-2xl text-primary">
+          JAMAi
+        </span>
       </Link>
       <div className="flex gap-8">
         {session ? (

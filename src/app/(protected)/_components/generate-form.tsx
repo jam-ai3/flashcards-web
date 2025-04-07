@@ -76,23 +76,23 @@ export default function GenerateForm({ userId }: GenerateFormProps) {
   return (
     <Card>
       <CardHeader className="space-y-2">
-        <CardTitle className="flex justify-between items-center">
+        <CardTitle className="flex flex-col items-start lg:flex-row lg:justify-between lg:items-center gap-4">
           <span>Information</span>
           <div className="flex gap-2">
             <Button
-              variant={inputType === "notes" ? "default" : "outline"}
+              variant={inputType === "notes" ? "accent" : "outline"}
               onClick={() => setInputType("notes")}
             >
               Notes
             </Button>
             <Button
-              variant={inputType === "syllabus" ? "default" : "outline"}
+              variant={inputType === "syllabus" ? "accent" : "outline"}
               onClick={() => setInputType("syllabus")}
             >
               Syllabus
             </Button>
             <Button
-              variant={inputType === "courseInfo" ? "default" : "outline"}
+              variant={inputType === "courseInfo" ? "accent" : "outline"}
               onClick={() => setInputType("courseInfo")}
             >
               Course Info
@@ -104,7 +104,12 @@ export default function GenerateForm({ userId }: GenerateFormProps) {
       <CardContent>
         <form action={action} className="flex flex-col gap-2">
           {renderInput()}
-          <Button type="submit" className="mt-6" disabled={isPending}>
+          <Button
+            type="submit"
+            className="mt-6"
+            disabled={isPending}
+            variant="accent"
+          >
             {isPending && <Loader2 className="animate-spin" />}
             <span>{isPending ? "Generating..." : "Generate"}</span>
           </Button>

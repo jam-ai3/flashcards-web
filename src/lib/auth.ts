@@ -2,16 +2,11 @@
 
 import { jwtVerify, SignJWT } from "jose";
 import { headers } from "next/headers";
+import { Session } from "./types";
 
 const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET!);
 
-type User = {
-  id: string;
-  email: string;
-  isAdmin: boolean;
-};
-
-export async function signToken(payload: User) {
+export async function signToken(payload: Session) {
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setExpirationTime("1d")
@@ -23,7 +18,7 @@ export async function verifyToken(token: string) {
     const { payload } = await jwtVerify(token, SECRET_KEY, {
       algorithms: ["HS256"],
     });
-    return payload as User;
+    return payload as Session;
   } catch {
     return null;
   }

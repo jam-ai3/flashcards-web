@@ -54,7 +54,7 @@ function FlashcardView({ flashcard }: FlashcardViewProps) {
 
   return (
     <div
-      className="relative w-1/2 aspect-video cursor-pointer"
+      className="relative w-5/6 md:w-2/3 lg:w-1/2 aspect-video cursor-pointer"
       onClick={() => setSide(side === "front" ? "back" : "front")}
     >
       <motion.div
@@ -64,7 +64,7 @@ function FlashcardView({ flashcard }: FlashcardViewProps) {
         transition={{ duration: 0.5 }}
         style={{ backfaceVisibility: "hidden" }}
       >
-        <p className="text-lg text-center">{flashcard.front}</p>
+        <p className="text-sm md:text-lg text-center">{flashcard.front}</p>
       </motion.div>
       <motion.div
         className="absolute inset-0 flex items-center justify-center border-2 rounded-xl p-6 bg-secondary"
@@ -73,7 +73,7 @@ function FlashcardView({ flashcard }: FlashcardViewProps) {
         transition={{ duration: 0.5 }}
         style={{ backfaceVisibility: "hidden" }}
       >
-        <p className="text-lg text-center">{flashcard.back}</p>
+        <p className="text-sm md:text-lg text-center">{flashcard.back}</p>
       </motion.div>
     </div>
   );

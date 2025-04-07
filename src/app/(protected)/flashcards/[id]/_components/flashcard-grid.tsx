@@ -43,7 +43,7 @@ export default function FlashcardGrid({
 
   return (
     <>
-      <div className="flex justify-between items-center">
+      <div className="flex gap-4 flex-col md:flex-row md:justify-between md:items-center">
         <div>
           <div className="flex gap-2">
             <Link href="/" className="flex gap-2 items-center">
@@ -95,7 +95,7 @@ export default function FlashcardGrid({
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-4 pb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-6">
           {flashcards.map((flashcard) => (
             <FlashcardView
               key={flashcard.id}

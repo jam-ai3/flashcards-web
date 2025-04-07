@@ -140,8 +140,8 @@
 /* Custom Styles */
 
 :root {
-  --custom-accent: #07f;
-  --custm-accent-secondary: #06c;
+  --custom-accent: rgb(4, 153, 4);
+  --custom-accent-dark: rgb(3, 128, 3);
 }
 
 button:hover {
@@ -149,12 +149,4 @@ button:hover {
 }
 button:disabled {
   cursor: not-allowed;
-}
-
-a {
-  color: var(--custom-accent);
-}
-a:hover,
-a:focus {
-  color: var(--custom-accent-secondary);
 }

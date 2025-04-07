@@ -3,6 +3,9 @@ export const MONTH_IN_MS = 1000 * 60 * 60 * 24 * 30;
 export const YEAR_IN_MS = 1000 * 60 * 60 * 24 * 365;
 export const TABLE_ROWS_PER_PAGE = 15;
 
+export const LG_WIDTH = 1024;
+export const MD_WIDTH = 768;
+
 export const HOME_SITE_URL = "https://jamai.dev";
 export const LOGIN_PAGE_URL = `${HOME_SITE_URL}/login`;
 export const REGISTER_PAGE_URL = `${HOME_SITE_URL}/register`;
