@@ -2,12 +2,22 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { MAX_FREE_TIER_FLASHCARDS } from "@/lib/constants";
 import { exportCsv } from "@/lib/utils";
 import { Flashcard, FlashcardGroup } from "@prisma/client";
 import { ArrowLeft, Book, Circle, CircleCheck, Info } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { deleteFlashcards } from "../../_actions/flashcard";
+import { useRouter } from "next/navigation";
 
 type FlashcardGridProps = {
   group: FlashcardGroup;
@@ -18,6 +28,7 @@ export default function FlashcardGrid({
   group,
   flashcards,
 }: FlashcardGridProps) {
+  const router = useRouter();
   const [selected, setSelected] = useState<Flashcard[]>([]);
 
   function toggleSelectAll() {
@@ -36,6 +47,13 @@ export default function FlashcardGrid({
     }
   }
 
+  async function handleDelete() {
+    try {
+      await deleteFlashcards(selected);
+      router.refresh();
+    } catch {}
+  }
+
   function handleExport() {
     const csv = selected.map((f) => `"${f.front}","${f.back}"`).join("\n");
     exportCsv(csv);
@@ -46,7 +64,7 @@ export default function FlashcardGrid({
       <div className="flex gap-4 flex-col md:flex-row md:justify-between md:items-center">
         <div>
           <div className="flex gap-2">
-            <Link href="/" className="flex gap-2 items-center">
+            <Link href="/groups" className="flex gap-2 items-center">
               <ArrowLeft className="text-muted-foreground" size={16} />
             </Link>
             <p className="text-muted-foreground">
@@ -80,6 +98,25 @@ export default function FlashcardGrid({
                 : "Select All"}
             </span>
           </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="destructive" disabled={selected.length === 0}>
+                Delete
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Delete Flashcards</DialogTitle>
+                <DialogDescription>
+                  Delete {selected.length} flashcard
+                  {selected.length === 1 ? "" : "s"}?
+                </DialogDescription>
+              </DialogHeader>
+              <Button variant="destructive" onClick={handleDelete}>
+                Delete
+              </Button>
+            </DialogContent>
+          </Dialog>
           <Button onClick={handleExport}>Export CSV</Button>
         </div>
       </div>
