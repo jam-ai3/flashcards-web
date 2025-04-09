@@ -1,4 +1,3 @@
-import { createClient } from "@libsql/client";
 import { PrismaLibSQL } from "@prisma/adapter-libsql";
 import { PrismaClient } from "@prisma/client";
 
@@ -10,8 +9,7 @@ const prismaClientSingleton = () => {
     throw new Error("DATABASE_URL and DATABASE_AUTH_TOKEN must be set");
   }
 
-  const libsql = createClient({ url, authToken });
-  const adapter = new PrismaLibSQL(libsql);
+  const adapter = new PrismaLibSQL({ url, authToken });
 
   return new PrismaClient({ adapter });
 };
