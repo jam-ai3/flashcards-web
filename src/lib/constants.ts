@@ -2,6 +2,7 @@ export const WEEK_IN_MS = 1000 * 60 * 60 * 24 * 7;
 export const MONTH_IN_MS = 1000 * 60 * 60 * 24 * 30;
 export const YEAR_IN_MS = 1000 * 60 * 60 * 24 * 365;
 export const TABLE_ROWS_PER_PAGE = 15;
+export const FREE_TRIAL_ENDS = new Date("2026-01-01");
 
 export const LG_WIDTH = 1024;
 export const MD_WIDTH = 768;

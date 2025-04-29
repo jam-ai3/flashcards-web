@@ -1,7 +1,7 @@
 "use server";
 
 import db from "@/db/db";
-import { CustomError } from "@/lib/utils";
+import { CustomError, isFreeTrialActive } from "@/lib/utils";
 import {
   InputFormat,
   InputType,
@@ -9,7 +9,6 @@ import {
   RawFlashcard,
 } from "@/lib/types";
 import { redirect } from "next/navigation";
-import { WEEK_IN_MS } from "@/lib/constants";
 
 type PaymentType = "free" | "single" | "subscription";
 
@@ -32,8 +31,7 @@ export async function getPaymentOptions(
   const subscriptionType =
     subscription && subscription.expiresAt.getTime() > Date.now()
       ? "subscription"
-      : user.freeTrialStart &&
-        user.freeTrialStart.getTime() + WEEK_IN_MS > Date.now()
+      : isFreeTrialActive(user)
       ? "free"
       : null;
 
