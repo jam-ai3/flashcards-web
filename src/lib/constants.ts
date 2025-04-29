@@ -8,7 +8,7 @@ export const LG_WIDTH = 1024;
 export const MD_WIDTH = 768;
 
 export const HOME_SITE_URL = "https://jamai.dev";
-export const LOGIN_PAGE_URL = `${HOME_SITE_URL}/login`;
+export const LOGIN_PAGE_URL = `${HOME_SITE_URL}/login?from=study`;
 export const REGISTER_PAGE_URL = `${HOME_SITE_URL}/register`;
 export const PRODUCT_PAGE_URL = `${HOME_SITE_URL}/pricing`;
 export const ACCOUNT_PAGE_URL = `${HOME_SITE_URL}/account`;
