@@ -22,8 +22,8 @@ export default function FullHeader({ session }: HeaderProps) {
           width={LOGO_SIZE}
           height={LOGO_SIZE}
         />
-        <span className="font-semibold text-lg lg:text-2xl text-primary">
-          JAMAi
+        <span className="font-semibold text-primary text-lg lg:text-2xl">
+          jamAI
         </span>
       </Link>
       <div className="flex gap-8">

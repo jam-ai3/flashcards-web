@@ -15,7 +15,7 @@ export default function Footer({ absolute = false }: FooterProps) {
             </Link>
           </li>
           <li>
-            <span className="text-muted-foreground">&copy; 2025 JAMAi</span>
+            <span className="text-muted-foreground">&copy; 2025 jamAI</span>
           </li>
           <li>
             <Link href="/terms-of-service.pdf">
