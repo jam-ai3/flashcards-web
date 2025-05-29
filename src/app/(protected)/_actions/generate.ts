@@ -1,7 +1,7 @@
 "use server";
 
 import db from "@/db/db";
-import { CustomError, isFreeTrialActive } from "@/lib/utils";
+import { CustomError } from "@/lib/utils";
 import {
   InputFormat,
   InputType,
@@ -28,12 +28,14 @@ export async function getPaymentOptions(
 
   if (!user) return { error: "User not found" };
 
-  const subscriptionType =
-    subscription && subscription.expiresAt.getTime() > Date.now()
-      ? "subscription"
-      : isFreeTrialActive(user)
-      ? "free"
-      : null;
+  // all generations are free
+  // const subscriptionType =
+  //   subscription && subscription.expiresAt.getTime() > Date.now()
+  //     ? "subscription"
+  //     : isFreeTrialActive(user)
+  //     ? "free"
+  //     : null;
+  const subscriptionType = "subscription";
 
   return {
     subscriptionType,

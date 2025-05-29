@@ -61,18 +61,16 @@ export default function FlashcardGrid({
 
   return (
     <>
-      <div className="flex gap-4 flex-col md:flex-row md:justify-between md:items-center">
+      <div className="flex md:flex-row flex-col md:justify-between md:items-center gap-4">
         <div>
           <div className="flex gap-2">
-            <Link href="/groups" className="flex gap-2 items-center">
+            <Link href="/groups" className="flex items-center gap-2">
               <ArrowLeft className="text-muted-foreground" size={16} />
+              <span>Flashcard Decks</span>
             </Link>
-            <p className="text-muted-foreground">
-              {formatPaymentString(group.paymentType)}
-            </p>
           </div>
           {group.paymentType === "free" && (
-            <div className="text-yellow-500 flex items-center gap-2">
+            <div className="flex items-center gap-2 text-yellow-500">
               <Info />
               <p>
                 Flashcards generated using free trial are limited to a maximum
@@ -81,7 +79,7 @@ export default function FlashcardGrid({
             </div>
           )}
         </div>
-        <div className="flex gap-4 items-center">
+        <div className="flex items-center gap-4">
           <Button asChild variant="secondary">
             <Link href={`/flashcards/${group.id}/study`}>
               <Book className="text-primary" />
@@ -121,8 +119,8 @@ export default function FlashcardGrid({
         </div>
       </div>
       {group.error ? (
-        <div className="grid place-items-center h-full">
-          <div className="flex flex-col gap-2 items-center">
+        <div className="place-items-center grid h-full">
+          <div className="flex flex-col items-center gap-2">
             <p className="font-semibold text-xl">
               There was an error generating your flashcards
             </p>
@@ -132,7 +130,7 @@ export default function FlashcardGrid({
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-6">
+        <div className="gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pb-6">
           {flashcards.map((flashcard) => (
             <FlashcardView
               key={flashcard.id}
@@ -163,10 +161,10 @@ function FlashcardView({
   return (
     <Card
       onClick={handleSelect.bind(null, flashcard)}
-      className="cursor-pointer relative"
+      className="relative cursor-pointer"
     >
       <CardContent className="space-y-4">
-        <div className="absolute top-2 right-2 accent-accent">
+        <div className="top-2 right-2 absolute accent-accent">
           {isSelected ? (
             <CircleCheck size={CIRCLE_SIZE} />
           ) : (
@@ -181,17 +179,17 @@ function FlashcardView({
   );
 }
 
-function formatPaymentString(paymentType: string | null) {
-  switch (paymentType) {
-    case "free":
-      return "Flashcards generated with free trial";
-    case "single":
-      return "Flashcards generated with single payment";
-    case "subscription":
-      return "Flashcards generated with subscription";
-    case null:
-      return "An error occured while generating flashcards, you have not been charged";
-    default:
-      return "Flashcards generated with unknown payment type";
-  }
-}
+// function formatPaymentString(paymentType: string | null) {
+//   switch (paymentType) {
+//     case "free":
+//       return "Flashcards generated with free trial";
+//     case "single":
+//       return "Flashcards generated with single payment";
+//     case "subscription":
+//       return "Flashcards generated with subscription";
+//     case null:
+//       return "An error occured while generating flashcards, you have not been charged";
+//     default:
+//       return "Flashcards generated with unknown payment type";
+//   }
+// }

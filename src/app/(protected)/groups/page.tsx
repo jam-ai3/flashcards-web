@@ -22,12 +22,15 @@ export default async function GroupsPage() {
         },
       },
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
   if (!groups || groups.length === 0) {
     return (
-      <div className="h-full grid place-items-center">
-        <div className="flex flex-col gap-4 items-center">
+      <div className="place-items-center grid h-full">
+        <div className="flex flex-col items-center gap-4">
           <p className="font-semibold text-lg">No Flashcard Sets Created</p>
           <p className="text-muted-foreground text-center">
             Click the button below to get started
@@ -48,10 +51,10 @@ export default async function GroupsPage() {
       {groups.map((group, index) => (
         <li
           key={group.id}
-          className="flex justify-between items-center rounded-md border bg-secondary py-2 px-4 text-primary"
+          className="flex justify-between items-center bg-secondary px-4 py-2 border rounded-md text-primary"
         >
           <Link href={`/flashcards/${group.id}`}>
-            <div className="flex gap-4 items-center">
+            <div className="flex items-center gap-4">
               {group.error === null ? (
                 <CircleCheck />
               ) : (
