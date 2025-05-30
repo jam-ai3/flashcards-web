@@ -13,7 +13,15 @@ import {
 import { MAX_FREE_TIER_FLASHCARDS } from "@/lib/constants";
 import { exportCsv } from "@/lib/utils";
 import { Flashcard, FlashcardGroup } from "@prisma/client";
-import { ArrowLeft, Book, Circle, CircleCheck, Info } from "lucide-react";
+import {
+  ArrowLeft,
+  Book,
+  Circle,
+  CircleCheck,
+  Info,
+  Share,
+  Trash,
+} from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { deleteFlashcards } from "../../_actions/flashcard";
@@ -64,7 +72,7 @@ export default function FlashcardGrid({
       <div className="flex md:flex-row flex-col md:justify-between md:items-center gap-4">
         <div>
           <div className="flex gap-2">
-            <Link href="/groups" className="flex items-center gap-2">
+            <Link href="/flashcards" className="flex items-center gap-2">
               <ArrowLeft className="text-muted-foreground" size={16} />
               <span>Flashcard Decks</span>
             </Link>
@@ -80,13 +88,13 @@ export default function FlashcardGrid({
           )}
         </div>
         <div className="flex items-center gap-4">
-          <Button asChild variant="secondary">
-            <Link href={`/flashcards/${group.id}/study`}>
+          <Button asChild variant="ghost">
+            <Link href={`/study/${group.id}`}>
               <Book className="text-primary" />
               <span className="text-primary">Study</span>
             </Link>
           </Button>
-          <Button onClick={toggleSelectAll} variant="secondary">
+          <Button onClick={toggleSelectAll} variant="ghost">
             <span>
               {selected.length} / {flashcards.length}
             </span>
@@ -99,7 +107,8 @@ export default function FlashcardGrid({
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="destructive" disabled={selected.length === 0}>
-                Delete
+                <Trash />
+                <span>Delete</span>
               </Button>
             </DialogTrigger>
             <DialogContent>
@@ -115,7 +124,10 @@ export default function FlashcardGrid({
               </Button>
             </DialogContent>
           </Dialog>
-          <Button onClick={handleExport}>Export CSV</Button>
+          <Button onClick={handleExport}>
+            <Share />
+            <span>Export CSV</span>
+          </Button>
         </div>
       </div>
       {group.error ? (

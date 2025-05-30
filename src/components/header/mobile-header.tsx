@@ -37,7 +37,7 @@ export default function MobileHeader({ session }: HeaderProps) {
           {session ? (
             <>
               <DropdownMenuItem asChild>
-                <Link href="/groups">
+                <Link href="/flashcards">
                   <span>Flashcards</span>
                 </Link>
               </DropdownMenuItem>

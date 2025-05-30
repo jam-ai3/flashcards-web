@@ -33,5 +33,5 @@ async function userExists(userId: string | undefined) {
 }
 
 export const config = {
-  matcher: ["/", "/flashcards/:path*", "/plan", "/groups", "/admin/:path*"],
+  matcher: ["/", "/flashcards/:path*", "/plan", "/flashcards", "/admin/:path*"],
 };

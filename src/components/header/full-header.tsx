@@ -29,7 +29,7 @@ export default function FullHeader({ session }: HeaderProps) {
       <div className="flex gap-8">
         {session ? (
           <>
-            <NavbarLink href="/groups" title="Flashcards" />
+            <NavbarLink href="/flashcards" title="Flashcards" />
             <NavbarLink href={ACCOUNT_PAGE_URL} title="Account" />
           </>
         ) : (

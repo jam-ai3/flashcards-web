@@ -39,6 +39,7 @@ model Subscription {
 model FlashcardGroup {
   id          String   @id @default(uuid())
   createdAt   DateTime @default(now())
+  // title       String
   prompt      String
   error       String?
   paymentType String
